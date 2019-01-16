@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "319350180652",
+    "firebase_url": "https://funchat-ae97c.firebaseio.com",
+    "project_id": "funchat-ae97c",
+    "storage_bucket": "funchat-ae97c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319350180652:android:dfd118a55d24d6e9",
+        "android_client_info": {
+          "package_name": "com.example.amangoyal.funchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319350180652-fhbvh8n94hqhl65g5dl2qftsvhknr5u1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.amangoyal.funchat",
+            "certificate_hash": "458a1a48d6f776d748f9068413fa60298ed5bdd6"
+          }
+        },
+        {
+          "client_id": "319350180652-rtfbism2hjs4275htd0vegte6tu9i9uu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBmW7-cD9w0ym3zNvd8Uweh4SPNpoyYFg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "319350180652-rtfbism2hjs4275htd0vegte6tu9i9uu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
