@@ -38,13 +38,18 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+
+        // Setting v7 toolbar
         toolbar = findViewById(R.id.registertoolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Create account");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // getting authentication reference
         mAuth = FirebaseAuth.getInstance();
 
+
+        //Initializing all the layout parameters
         mName = findViewById(R.id.textInputLayout);
         mEmail = findViewById(R.id.textInputLayout2);
         mPass = findViewById(R.id.textInputLayout3);
@@ -65,6 +70,8 @@ public class RegisterActivity extends AppCompatActivity {
                     mProgress.setMessage("Please Wait a While");
                     mProgress.setCanceledOnTouchOutside(false);
                     mProgress.show();
+
+                    // this method will register new user in the firebase
                     registerNewUser(name, email, pass);
                 } else
                     Toast.makeText(RegisterActivity.this, "Please fill all the entries", Toast.LENGTH_SHORT).show();
@@ -80,16 +87,19 @@ public class RegisterActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
+                            //Getting current user using FirebaseUser
                             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                             String uid = firebaseUser.getUid();
                             mDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
 
+                            //Adding data to HashMap to set in firabse databse
                             HashMap<String, String> userMap = new HashMap<>();
                             userMap.put("name", name);
                             userMap.put("status", "Hi! there I'm using FunChat");
                             userMap.put("image", "default");
                             userMap.put("thumb_image", "default");
 
+                            //Setting values in databse using set value function of firebase DB
                             mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

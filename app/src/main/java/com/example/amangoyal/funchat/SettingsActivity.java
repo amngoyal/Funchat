@@ -54,6 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+
+        //Setting progress bar
         mProgressDialogue = new ProgressDialog(this);
         mProgressDialogue.setTitle("Opening you account settings");
         mProgressDialogue.setMessage("Please wait for a moment");
@@ -74,6 +76,7 @@ public class SettingsActivity extends AppCompatActivity {
         mStorage = FirebaseStorage.getInstance().getReference();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUid = mUser.getUid();
+          // getting the database refrence from the user's database through current UID
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(currentUid);
 
 
@@ -87,7 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                 mName.setText(name);
                 mStatus.setText(status);
-                if(!image.equals("default")) {
+                if (!image.equals("default")) {
                     Picasso.get().load(image).placeholder(R.drawable.default_avatar).into(mImage);
                 }
                 mProgressDialogue.dismiss();
