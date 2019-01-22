@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -114,7 +113,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-
+/* When the change image button is clicked then gallery intent opens to select the image */
         mChangeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +129,9 @@ public class SettingsActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == GALLRY_PICK) {
             Uri imageUri = data.getData();
+
+            //Crop image library used to crop the image startActivityForResult() method
+            // return the selected image uri which is passed to cropImage method
             CropImage.activity(imageUri)
                     .setAspectRatio(1, 1)
                     .setGuidelines(CropImageView.Guidelines.ON)
@@ -162,7 +164,7 @@ public class SettingsActivity extends AppCompatActivity {
                                         public void onComplete(@NonNull Task<Void> task) {
                                             if (task.isSuccessful()) {
                                                 mProgressDialogue.dismiss();
-                                                Toast.makeText(SettingsActivity.this, "Succesfully uploaded", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(SettingsActivity.this, "Profile picture successfully uploaded", Toast.LENGTH_SHORT).show();
                                             }
 
                                         }

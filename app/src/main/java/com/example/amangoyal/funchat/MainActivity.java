@@ -8,8 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toolbar;
 
+import com.example.amangoyal.funchat.Fragments.FriendsFragment;
+import com.example.amangoyal.funchat.loginAndRegisterActivity.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private TabLayout mTabLayout;
+
+    /* This is the main activity where all the chats and friends are shown in different fragments */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

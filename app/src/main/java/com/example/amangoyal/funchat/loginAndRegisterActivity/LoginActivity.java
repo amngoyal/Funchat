@@ -1,4 +1,4 @@
-package com.example.amangoyal.funchat;
+package com.example.amangoyal.funchat.loginAndRegisterActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -31,11 +31,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.amangoyal.funchat.MainActivity;
+import com.example.amangoyal.funchat.R;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;

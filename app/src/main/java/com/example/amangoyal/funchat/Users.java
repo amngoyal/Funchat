@@ -1,7 +1,5 @@
 package com.example.amangoyal.funchat;
 
-import java.security.PublicKey;
-import java.text.AttributedString;
 
 public class Users {
     private String name;
@@ -13,9 +11,8 @@ public class Users {
 
     }
 
-    public Users(String name, String image, String status) {
+    public Users(String name, String status) {
         this.name = name;
-        this.image = image;
         this.status = status;
     }
 

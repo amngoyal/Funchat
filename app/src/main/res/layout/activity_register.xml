@@ -19,7 +19,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".RegisterActivity"
+            tools:context=".loginAndRegisterActivity.RegisterActivity"
             tools:layout_editor_absoluteY="25dp">
 
 

@@ -28,12 +28,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".StartActivity" />
+        <activity android:name=".loginAndRegisterActivity.StartActivity" />
         <activity
-            android:name=".RegisterActivity"
-            android:parentActivityName=".StartActivity" />
+            android:name=".loginAndRegisterActivity.RegisterActivity"
+            android:parentActivityName=".loginAndRegisterActivity.StartActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".loginAndRegisterActivity.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name=".SettingsActivity"

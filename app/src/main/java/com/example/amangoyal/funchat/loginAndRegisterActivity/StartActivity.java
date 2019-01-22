@@ -1,10 +1,12 @@
-package com.example.amangoyal.funchat;
+package com.example.amangoyal.funchat.loginAndRegisterActivity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.amangoyal.funchat.R;
 
 public class StartActivity extends AppCompatActivity {
     Button startBtn, loginBtn;
