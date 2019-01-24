@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,7 +35,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
@@ -56,7 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView mStatus;
     private CircleImageView mImage;
     private Button mChangeStatus, mChangeImage;
-    private static final int GALLRY_PICK = 1;
+    private static final int GALLERY_PICK = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +97,8 @@ public class SettingsActivity extends AppCompatActivity {
 
                 mName.setText(name);
                 mStatus.setText(status);
-                if (!image.equals("default")) {
-                    Picasso.get().load(image).placeholder(R.drawable.default_avatar).into(mImage);
+                if (!thumbImage.equals("default")) {
+                    Picasso.get().load(thumbImage).placeholder(R.drawable.default_avatar).into(mImage);
                 }
                 mProgressDialogue.dismiss();
 
@@ -130,14 +128,14 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent galleryIntent = new Intent();
                 galleryIntent.setType("image/*");
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLRY_PICK);
+                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
             }
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && requestCode == GALLRY_PICK) {
+        if (resultCode == RESULT_OK && requestCode == GALLERY_PICK) {
             Uri imageUri = data.getData();
 
             //Crop image library used to crop the image startActivityForResult() method
