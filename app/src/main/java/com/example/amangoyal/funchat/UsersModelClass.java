@@ -1,17 +1,17 @@
 package com.example.amangoyal.funchat;
 
 
-public class Users {
+public class UsersModelClass {
     private String name;
     private String image;
     private String status;
 
 
-    public Users() {
+    public UsersModelClass() {
 
     }
 
-    public Users(String name, String status) {
+    public UsersModelClass(String name, String status) {
         this.name = name;
         this.status = status;
     }

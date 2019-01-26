@@ -45,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
     private StorageReference mStorage;
 
     private ProgressDialog mProgressDialogue;
-
+    public HashMap<String,Object> updateHashMap = new HashMap<>();
     private String downloadURL;
     private String thumb_downloadURL;
 
@@ -143,7 +143,7 @@ public class SettingsActivity extends AppCompatActivity {
             CropImage.activity(imageUri)
                     .setAspectRatio(1, 1)
                     .setGuidelines(CropImageView.Guidelines.ON)
-                    .setMinCropWindowSize(500, 500)
+                    .setMinCropWindowSize(500,500)
                     .start(this);
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -208,8 +208,8 @@ public class SettingsActivity extends AppCompatActivity {
                                                     public void onSuccess(Uri uri) {
                                                         thumb_downloadURL = uri.toString();
 
+
                                                         //updating values pf thumb_image and image in firebase database using hashmap
-                                                        HashMap updateHashMap = new HashMap();
                                                         updateHashMap.put("thumb_image",thumb_downloadURL);
                                                         updateHashMap.put("image",downloadURL);
 
@@ -218,7 +218,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
                                                                     mProgressDialogue.dismiss();
-                                                                    Toast.makeText(SettingsActivity.this, "Successfully uploaded" + thumb_downloadURL, Toast.LENGTH_LONG).show();
+                                                                    Toast.makeText(SettingsActivity.this, "Successfully uploaded" , Toast.LENGTH_LONG).show();
                                                                 } else {
                                                                     Toast.makeText(SettingsActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                                                 }

@@ -1,7 +1,7 @@
 package com.example.amangoyal.funchat;
 
+
 import android.app.ProgressDialog;
-import android.icu.lang.UScript;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.amangoyal.funchat.R;
+import com.example.amangoyal.funchat.UsersModelClass;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
@@ -59,16 +61,16 @@ public class AllUserActivity extends AppCompatActivity {
     //ViewHolder to handle out views in each position.
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public RelativeLayout root;
+        public LinearLayout root;
         public TextView tname;
         public TextView tstatus;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            root = itemView.findViewById(R.id.root);
-            tname = itemView.findViewById(R.id.single_user_name);
-            tstatus = itemView.findViewById(R.id.single_user_status);
+            root = itemView.findViewById(R.id.list_root);
+            tname = itemView.findViewById(R.id.list_title);
+            tstatus = itemView.findViewById(R.id.list_desc);
 
         }
 
@@ -83,35 +85,32 @@ public class AllUserActivity extends AppCompatActivity {
 
     }
 
-    //fetch the data from Database
     private void fetch() {
-
         Query query = FirebaseDatabase.getInstance().getReference().child("users");
 
-        FirebaseRecyclerOptions<Users> options =
-                new FirebaseRecyclerOptions.Builder<Users>()
-                        .setQuery(query, new SnapshotParser<Users>() {
+        FirebaseRecyclerOptions<UsersModelClass> options =
+                new FirebaseRecyclerOptions.Builder<UsersModelClass>()
+                        .setQuery(query, new SnapshotParser<UsersModelClass>() {
                             @NonNull
                             @Override
-                            public Users parseSnapshot(@NonNull DataSnapshot snapshot) {
-                                return new Users(snapshot.child("name").getValue().toString(),
+                            public UsersModelClass parseSnapshot(@NonNull DataSnapshot snapshot) {
+                                return new UsersModelClass(snapshot.child("name").getValue().toString(),
                                         snapshot.child("status").getValue().toString());
                             }
                         })
                         .build();
 
-        adapter = new FirebaseRecyclerAdapter<Users, ViewHolder>(options) {
+        adapter = new FirebaseRecyclerAdapter<UsersModelClass, ViewHolder>(options) {
             @Override
             public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.single_user_layout, parent, false);
-
                 return new ViewHolder(view);
             }
 
 
             @Override
-            protected void onBindViewHolder(ViewHolder holder, final int position, Users model) {
+            protected void onBindViewHolder(ViewHolder holder, final int position, UsersModelClass model) {
                 holder.setTextName(model.getName());
                 holder.setTextStatus(model.getStatus());
 
@@ -157,13 +156,13 @@ public class AllUserActivity extends AppCompatActivity {
         databaseReference.keepSynced(true);
         Query query = databaseReference.orderByKey();
 
-        FirebaseRecyclerOptions firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Users>().setQuery(query, Users.class).build();
+        FirebaseRecyclerOptions firebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<UsersModelClass>().setQuery(query, UsersModelClass.class).build();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
 
-        FirebaseRecyclerAdapter<Users, UsersViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Users, UsersViewHolder>(firebaseRecyclerOptions) {
+        FirebaseRecyclerAdapter<UsersModelClass, UsersViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<UsersModelClass, UsersViewHolder>(firebaseRecyclerOptions) {
             @Override
-            protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull Users model) {
+            protected void onBindViewHolder(@NonNull UsersViewHolder holder, int position, @NonNull UsersModelClass model) {
                 holder.setName(model.getName());
                 holder.setUserStatus(model.getStatus());
             }
