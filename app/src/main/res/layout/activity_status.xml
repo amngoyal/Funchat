@@ -5,10 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".StatusActivity">
 
+
     <include
         android:id="@+id/staus_toolbar"
-        layout="@layout/app_bar_layout"
-        />
+        layout="@layout/app_bar_layout" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
@@ -22,7 +22,6 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_marginLeft="16dp"
-            android:inputType="textCapSentences"
             android:layout_marginRight="16dp"
             android:hint="Your Status"
             android:layout_height="wrap_content" />
