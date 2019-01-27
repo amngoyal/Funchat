@@ -2,12 +2,14 @@ package com.example.amangoyal.funchat;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.transition.CircularPropagation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AllUserActivity extends AppCompatActivity {
 
@@ -64,6 +69,7 @@ public class AllUserActivity extends AppCompatActivity {
         public LinearLayout root;
         public TextView tname;
         public TextView tstatus;
+        public CircleImageView imageView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -71,6 +77,7 @@ public class AllUserActivity extends AppCompatActivity {
             root = itemView.findViewById(R.id.list_root);
             tname = itemView.findViewById(R.id.list_title);
             tstatus = itemView.findViewById(R.id.list_desc);
+            imageView = itemView.findViewById(R.id.single_user_image);
 
         }
 
@@ -80,6 +87,10 @@ public class AllUserActivity extends AppCompatActivity {
 
         public void setTextStatus(String status) {
             tstatus.setText(status);
+        }
+        public void setImage(String thumb_image){
+            Picasso.get().load(thumb_image).placeholder(R.drawable.default_avatar).into(imageView);
+
         }
 
 
@@ -95,7 +106,7 @@ public class AllUserActivity extends AppCompatActivity {
                             @Override
                             public UsersModelClass parseSnapshot(@NonNull DataSnapshot snapshot) {
                                 return new UsersModelClass(snapshot.child("name").getValue().toString(),
-                                        snapshot.child("status").getValue().toString());
+                                        snapshot.child("status").getValue().toString(),snapshot.child("thumb_image").getValue().toString());
                             }
                         })
                         .build();
@@ -113,11 +124,17 @@ public class AllUserActivity extends AppCompatActivity {
             protected void onBindViewHolder(ViewHolder holder, final int position, UsersModelClass model) {
                 holder.setTextName(model.getName());
                 holder.setTextStatus(model.getStatus());
+                holder.setImage(model.getThumb_image());
+
+                final String user_id = getRef(position).getKey();
 
                 holder.root.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(AllUserActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(AllUserActivity.this,ProfileActivity.class);
+                        intent.putExtra("user id", user_id);
+                        startActivity(intent);
                     }
                 });
             }

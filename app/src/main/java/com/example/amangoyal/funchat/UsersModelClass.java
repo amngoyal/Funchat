@@ -5,15 +5,26 @@ public class UsersModelClass {
     private String name;
     private String image;
     private String status;
+    private String thumb_image;
+
+    public String getThumb_image() {
+        return thumb_image;
+    }
+
+    public void setThumb_image(String thumb_image) {
+        this.thumb_image = thumb_image;
+    }
+
 
 
     public UsersModelClass() {
 
     }
 
-    public UsersModelClass(String name, String status) {
+    public UsersModelClass(String name, String status,String thumb_image) {
         this.name = name;
         this.status = status;
+        this.thumb_image = thumb_image;
     }
 
 
