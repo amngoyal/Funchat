@@ -4,6 +4,12 @@ package com.example.amangoyal.funchat;
 public class UsersModelClass {
     private String name;
     private String image;
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    private String uid;
     private String status;
     private String thumb_image;
 
@@ -15,15 +21,22 @@ public class UsersModelClass {
         this.thumb_image = thumb_image;
     }
 
-
-
-    public UsersModelClass() {
-
+    @Override
+    public String toString() {
+        return "UsersModelClass{" +
+                "name='" + name + '\'' +
+                ", image='" + image + '\'' +
+                ", uid='" + uid + '\'' +
+                ", status='" + status + '\'' +
+                ", thumb_image='" + thumb_image + '\'' +
+                '}';
     }
 
-    public UsersModelClass(String name, String status,String thumb_image) {
+    public UsersModelClass(String name,String image, String status, String thumb_image, String uid) {
+        this.uid = uid;
         this.name = name;
         this.status = status;
+        this.image = image;
         this.thumb_image = thumb_image;
     }
 
@@ -50,5 +63,9 @@ public class UsersModelClass {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getUid() {
+        return uid;
     }
 }
