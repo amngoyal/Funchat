@@ -133,7 +133,7 @@ public class AllUserActivity extends AppCompatActivity {
                     public void onClick(View view) {
                         Toast.makeText(AllUserActivity.this, String.valueOf(position), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(AllUserActivity.this,ProfileActivity.class);
-                        intent.putExtra("user id", user_id);
+                        intent.putExtra("user_id", user_id);
                         startActivity(intent);
                     }
                 });
