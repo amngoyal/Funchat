@@ -45,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
     private StorageReference mStorage;
 
     private ProgressDialog mProgressDialogue;
-    public HashMap<String,Object> updateHashMap = new HashMap<>();
+    public HashMap<String, Object> updateHashMap = new HashMap<>();
     private String downloadURL;
     private String thumb_downloadURL;
 
@@ -210,15 +210,15 @@ public class SettingsActivity extends AppCompatActivity {
 
 
                                                         //updating values pf thumb_image and image in firebase database using hashmap
-                                                        updateHashMap.put("thumb_image",thumb_downloadURL);
-                                                        updateHashMap.put("image",downloadURL);
+                                                        updateHashMap.put("thumb_image", thumb_downloadURL);
+                                                        updateHashMap.put("image", downloadURL);
 
                                                         mUserDatabase.updateChildren(updateHashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
                                                             public void onComplete(@NonNull Task<Void> task) {
                                                                 if (task.isSuccessful()) {
                                                                     mProgressDialogue.dismiss();
-                                                                    Toast.makeText(SettingsActivity.this, "Successfully uploaded" , Toast.LENGTH_LONG).show();
+                                                                    Toast.makeText(SettingsActivity.this, "Successfully uploaded", Toast.LENGTH_LONG).show();
                                                                 } else {
                                                                     Toast.makeText(SettingsActivity.this, "Error", Toast.LENGTH_SHORT).show();
                                                                 }
@@ -227,7 +227,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                                                     }
                                                 });
-
 
 
                                             } else {
