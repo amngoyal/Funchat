@@ -1,7 +1,6 @@
 package com.example.amangoyal.funchat;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +22,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private ImageView mImage;
@@ -30,7 +33,8 @@ public class ProfileActivity extends AppCompatActivity {
     private Button friend_request_btn,decline_request_btn;
     private DatabaseReference userDatabaseRefrence;
     private ProgressDialog mProgress;
-    private DatabaseReference friendDatabaseRefrence;
+    private DatabaseReference friendReqDatabaseRefrence;
+    private DatabaseReference friendsDatabaseRefrence;
     private FirebaseUser currentUser;
     private String currentState = "not_friends";
 
@@ -57,7 +61,9 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         userDatabaseRefrence = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
-        friendDatabaseRefrence = FirebaseDatabase.getInstance().getReference().child("friend_req");
+        friendReqDatabaseRefrence = FirebaseDatabase.getInstance().getReference().child("friend_req");
+        friendsDatabaseRefrence = FirebaseDatabase.getInstance().getReference().child("friends");
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
 
@@ -74,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Picasso.get().load(image).into(mImage);
 
 
-                friendDatabaseRefrence.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                friendReqDatabaseRefrence.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -113,22 +119,24 @@ public class ProfileActivity extends AppCompatActivity {
 
                 //----------------------Send friend request-------------
                 if(currentState.equals("not_friends")){
-                    friendDatabaseRefrence.child(currentUser.getUid()).child(userId).child("request_type")
+                    friendReqDatabaseRefrence.child(currentUser.getUid()).child(userId).child("request_type")
                             .setValue("sent").addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
 
-                                friendDatabaseRefrence.child(userId).child(currentUser.getUid()).child("request_type")
+                                friendReqDatabaseRefrence.child(userId).child(currentUser.getUid()).child("request_type")
                                         .setValue("received").addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        friend_request_btn.setEnabled(true);
                                         currentState = "req_sent";
                                         friend_request_btn.setText("Cancel friend request");
                                         Toast.makeText(ProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+
+                                friend_request_btn.setEnabled(true);
+
                             }
                             else {
                                 Toast.makeText(ProfileActivity.this, "Failed Sending request", Toast.LENGTH_SHORT).show();
@@ -142,10 +150,10 @@ public class ProfileActivity extends AppCompatActivity {
                 if(currentState.equals("req_sent")){
 
 
-                    friendDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    friendReqDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            friendDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            friendReqDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     friend_request_btn.setEnabled(true);
@@ -157,6 +165,45 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
 
+                }
+
+                //----------------------------Accept friend request-----------------------
+                if(currentState.equals("req_received")){
+                    DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+                    dateFormatter.setLenient(false);
+                    Date today = new Date();
+                 final   String currentDate = dateFormatter.format(today);
+                 //   final String currentDat = DateFormat.getDateInstance().format(new Date());
+
+
+                    friendsDatabaseRefrence.child(currentUser.getUid()).child(userId)
+                            .setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                    friendsDatabaseRefrence.child(userId).child(currentUser.getUid())
+                                            .setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                            friendReqDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    friendReqDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            friend_request_btn.setEnabled(true);
+                                                            friend_request_btn.setText("Unfriend this person");
+                                                            currentState = "not_friends";
+                                                        }
+                                                    });
+
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
                 }
 
             }
