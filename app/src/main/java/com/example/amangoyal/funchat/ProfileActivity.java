@@ -84,12 +84,21 @@ public class ProfileActivity extends AppCompatActivity {
         friend_request_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                friend_request_btn.setEnabled(false);
+
+                //----------------------Send friend request-------------
                 if(currentState.equals("not_friends")){
                     friendDatabaseRefrence.child(currentUser.getUid()).child(userId).child("request_type")
                             .setValue("sent").addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
+
+                                friend_request_btn.setEnabled(true);
+                                currentState = "req_sent";
+                                friend_request_btn.setText("Cancel friend request");
+
                                 friendDatabaseRefrence.child(userId).child(currentUser.getUid()).child("request_type")
                                         .setValue("received").addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
@@ -105,6 +114,12 @@ public class ProfileActivity extends AppCompatActivity {
                     });
 
                 }
+
+                //----------------------Cancel request---------------------
+                if(currentState.equals("req_sent")){
+
+                }
+
             }
         });
     }
