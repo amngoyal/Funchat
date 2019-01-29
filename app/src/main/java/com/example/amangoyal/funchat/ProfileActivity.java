@@ -72,7 +72,32 @@ public class ProfileActivity extends AppCompatActivity {
                 tname.setText(displayName);
                 tstatus.setText(status);
                 Picasso.get().load(image).into(mImage);
-                mProgress.dismiss();
+
+
+                friendDatabaseRefrence.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        if(dataSnapshot.hasChild(userId)){
+                           String req_type = dataSnapshot.child(userId).getValue().toString();
+                           if(req_type.equals("received")){
+                               currentState = "req_received";
+                               friend_request_btn.setText("Accept friend request");
+                           }else if(req_type.equals("sent")){
+                               currentState = "req_sent";
+                               friend_request_btn.setText("Cancel friend request");
+                           }
+                        }
+                        mProgress.dismiss();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
             }
 
             @Override
@@ -118,13 +143,14 @@ public class ProfileActivity extends AppCompatActivity {
                 //----------------------Cancel request---------------------
                 if(currentState.equals("req_sent")){
 
-                    friend_request_btn.setEnabled(true);
-                    friend_request_btn.setText("Send Friend request");
-                    currentState = "not_friends";
+
                     friendDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             friendDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue();
+                            friend_request_btn.setEnabled(true);
+                            friend_request_btn.setText("Send Friend request");
+                            currentState = "not_friends";
                         }
                     });
 
