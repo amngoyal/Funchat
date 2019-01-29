@@ -118,6 +118,16 @@ public class ProfileActivity extends AppCompatActivity {
                 //----------------------Cancel request---------------------
                 if(currentState.equals("req_sent")){
 
+                    friend_request_btn.setEnabled(true);
+                    friend_request_btn.setText("Send Friend request");
+                    currentState = "not_friends";
+                    friendDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            friendDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue();
+                        }
+                    });
+
                 }
 
             }
