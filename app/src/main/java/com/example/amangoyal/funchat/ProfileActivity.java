@@ -79,7 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         if(dataSnapshot.hasChild(userId)){
-                           String req_type = dataSnapshot.child(userId).getValue().toString();
+                           String req_type = dataSnapshot.child(userId).child("request_type").getValue().toString();
                            if(req_type.equals("received")){
                                currentState = "req_received";
                                friend_request_btn.setText("Accept friend request");
@@ -93,7 +93,6 @@ public class ProfileActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
-
                     }
                 });
 
@@ -120,14 +119,13 @@ public class ProfileActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
 
-                                friend_request_btn.setEnabled(true);
-                                currentState = "req_sent";
-                                friend_request_btn.setText("Cancel friend request");
-
                                 friendDatabaseRefrence.child(userId).child(currentUser.getUid()).child("request_type")
                                         .setValue("received").addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
+                                        friend_request_btn.setEnabled(true);
+                                        currentState = "req_sent";
+                                        friend_request_btn.setText("Cancel friend request");
                                         Toast.makeText(ProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
                                     }
                                 });
@@ -147,10 +145,15 @@ public class ProfileActivity extends AppCompatActivity {
                     friendDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            friendDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue();
-                            friend_request_btn.setEnabled(true);
-                            friend_request_btn.setText("Send Friend request");
-                            currentState = "not_friends";
+                            friendDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    friend_request_btn.setEnabled(true);
+                                    friend_request_btn.setText("Send Friend request");
+                                    currentState = "not_friends";
+                                }
+                            });
+
                         }
                     });
 
