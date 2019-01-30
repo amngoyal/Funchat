@@ -229,6 +229,25 @@ public class ProfileActivity extends AppCompatActivity {
                     });
                 }
 
+                //--------------------------------Unfriend--------------------------------
+                if(currentState.equals("friends")){
+                    friendsDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue()
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                   friendsDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                       @Override
+                                       public void onSuccess(Void aVoid) {
+                                           friend_request_btn.setEnabled(true);
+                                           friend_request_btn.setText("Send Friend request");
+                                           currentState = "not_friends";
+                                       }
+                                   });
+                                }
+                            });
+
+                }
+
             }
         });
     }
