@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -29,13 +28,10 @@ import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 
@@ -85,6 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
         String currentUid = mUser.getUid();
         // getting the database refrence from the user's database through current UID
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(currentUid);
+        mUserDatabase.keepSynced(true);
 
 
         mUserDatabase.addValueEventListener(new ValueEventListener() {

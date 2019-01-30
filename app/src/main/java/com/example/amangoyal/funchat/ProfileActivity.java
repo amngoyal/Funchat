@@ -69,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         userDatabaseRefrence.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String displayName = dataSnapshot.child("name").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
                 String image = dataSnapshot.child("thumb_image").getValue().toString();
@@ -80,6 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
                 Picasso.get().load(image).into(mImage);
 
 
+                //----------------------Friend request button state------------------
                 friendReqDatabaseRefrence.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -93,12 +94,32 @@ public class ProfileActivity extends AppCompatActivity {
                                 currentState = "req_sent";
                                 friend_request_btn.setText("Cancel friend request");
                             }
+                            mProgress.dismiss();
+
+                        } else {
+                            friendsDatabaseRefrence.child(currentUser.getUid()).addListenerForSingleValueEvent(
+                                    new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                      if(dataSnapshot.hasChild(userId)){
+                                          friend_request_btn.setText("Unfriend this person");
+                                          currentState = "friends";
+                                      }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            mProgress.dismiss();
+                                        }
+                                    });
+                            mProgress.dismiss();
                         }
-                        mProgress.dismiss();
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        mProgress.dismiss();
                     }
                 });
 
@@ -108,8 +129,11 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                mProgress.dismiss();
             }
         });
+
+
 
         friend_request_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,7 +217,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                 public void onSuccess(Void aVoid) {
                                                     friend_request_btn.setEnabled(true);
                                                     friend_request_btn.setText("Unfriend this person");
-                                                    currentState = "not_friends";
+                                                    currentState = "friends";
                                                 }
                                             });
 
