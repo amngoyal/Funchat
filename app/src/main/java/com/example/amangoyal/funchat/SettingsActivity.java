@@ -147,6 +147,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        mProgressDialogue.show();
         if (resultCode == RESULT_OK && requestCode == GALLERY_PICK) {
             Uri imageUri = data.getData();
 
@@ -240,7 +241,7 @@ public class SettingsActivity extends AppCompatActivity {
                                                     }
                                                 });
 
-
+                                                mProgressDialogue.dismiss();
                                             } else {
                                                 Toast.makeText(SettingsActivity.this, "Error in uploading the thumbnail", Toast.LENGTH_SHORT).show();
                                                 mProgressDialogue.dismiss();
