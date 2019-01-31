@@ -69,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         userDatabaseRefrence.addValueEventListener(new ValueEventListener() {
             @Override
-             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String displayName = dataSnapshot.child("name").getValue().toString();
                 String status = dataSnapshot.child("status").getValue().toString();
                 String image = dataSnapshot.child("thumb_image").getValue().toString();
@@ -113,15 +113,14 @@ public class ProfileActivity extends AppCompatActivity {
                                     new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                      if(dataSnapshot.hasChild(userId)){
-                                          friend_request_btn.setText("Unfriend this person");
-                                          currentState = "friends";
-                                          Toast.makeText(ProfileActivity.this, "friends", Toast.LENGTH_SHORT).show();
-                                      }
-                                      else {
-                                          Toast.makeText(ProfileActivity.this, "not_friends", Toast.LENGTH_SHORT).show();
+                                            if (dataSnapshot.hasChild(userId)) {
+                                                friend_request_btn.setText("Unfriend this person");
+                                                currentState = "friends";
+                                                Toast.makeText(ProfileActivity.this, "friends", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(ProfileActivity.this, "not_friends", Toast.LENGTH_SHORT).show();
 
-                                      }
+                                            }
                                         }
 
                                         @Override
@@ -147,7 +146,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
-
 
 
         friend_request_btn.setOnClickListener(new View.OnClickListener() {
@@ -252,21 +250,21 @@ public class ProfileActivity extends AppCompatActivity {
                 }
 
                 //--------------------------------Unfriend--------------------------------
-                if(currentState.equals("friends")){
+                if (currentState.equals("friends")) {
                     friendsDatabaseRefrence.child(currentUser.getUid()).child(userId).removeValue()
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                   friendsDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                       @Override
-                                       public void onSuccess(Void aVoid) {
-                                           friend_request_btn.setEnabled(true);
-                                           friend_request_btn.setText("Send Friend request");
-                                           currentState = "not_friends";
-                                           decline_request_btn.setVisibility(View.INVISIBLE);
-                                           decline_request_btn.setEnabled(false);
-                                       }
-                                   });
+                                    friendsDatabaseRefrence.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            friend_request_btn.setEnabled(true);
+                                            friend_request_btn.setText("Send Friend request");
+                                            currentState = "not_friends";
+                                            decline_request_btn.setVisibility(View.INVISIBLE);
+                                            decline_request_btn.setEnabled(false);
+                                        }
+                                    });
                                 }
                             });
 
