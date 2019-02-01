@@ -183,6 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
                                       //  Toast.makeText(ProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
 
 
+                                        //Hashmap used to set notification data
                                         HashMap<String,String> notificationData = new HashMap<>();
                                         notificationData.put("from",currentUser.getUid());
                                         notificationData.put("type","request");
