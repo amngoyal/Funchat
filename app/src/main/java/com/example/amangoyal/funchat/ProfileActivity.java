@@ -187,7 +187,6 @@ public class ProfileActivity extends AppCompatActivity {
                                         notificationData.put("from",currentUser.getUid());
                                         notificationData.put("type","request");
 
-                                        //Toast.makeText(ProfileActivity.this, "friend_req node child created", Toast.LENGTH_SHORT).show();
                                         mNotificationReference.child(userId).push().setValue(notificationData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
