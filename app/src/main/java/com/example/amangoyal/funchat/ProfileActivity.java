@@ -180,7 +180,6 @@ public class ProfileActivity extends AppCompatActivity {
                                         friend_request_btn.setText("Cancel friend request");
                                         decline_request_btn.setVisibility(View.INVISIBLE);
                                         decline_request_btn.setEnabled(false);
-                                      //  Toast.makeText(ProfileActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
 
 
                                         //Hashmap used to set notification data
