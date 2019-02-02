@@ -37,6 +37,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +74,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private DatabaseReference databaseReference;
 
     private android.support.v7.widget.Toolbar toolbar;
 
@@ -87,6 +92,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mAuth = FirebaseAuth.getInstance();
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
+
+        databaseReference= FirebaseDatabase.getInstance().getReference().child("users");
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -215,10 +222,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    finish();
+
+                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
+                    String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                    databaseReference.child(currentUser).child("tokenID").setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                                finish();
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, "Error in creating token id", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+
                 } else
                     Toast.makeText(LoginActivity.this, "Login Failed!! Please check email and password", Toast.LENGTH_SHORT).show();
             }
