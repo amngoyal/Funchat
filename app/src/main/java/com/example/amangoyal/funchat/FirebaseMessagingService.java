@@ -13,6 +13,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         String notificationTitle = remoteMessage.getNotification().getTitle();
         String notificationBody = remoteMessage.getNotification().getBody();
+        String clickAction = remoteMessage.getNotification().getClickAction();
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
@@ -30,5 +31,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
         // Build the notification and issue it
         notificationManager.notify(mNotificationId,mBuilder.build());
+
+
     }
 }

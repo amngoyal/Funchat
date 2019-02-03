@@ -28,7 +28,12 @@
         </service>
 
 
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity">
+            <intent-filter>
+                <action android:name="com.example.amangoyal.funchat.TARGET_NOTIFICATION"/>
+                <category android:name="android.intent.category.CATEGORY_DEFAULT"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
