@@ -11,16 +11,16 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("My notification")
-                .setContentText("Much longer text that cannot fit one line...")
+                .setContentTitle("New Friend Request")
+                .setContentText("You've received a new Friend Request")
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         //Sets an id for the notification
-        int mNotificationId = 001;
+        int mNotificationId = (int)System.currentTimeMillis();
 
         //Gets an instance for the notification manager service
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
