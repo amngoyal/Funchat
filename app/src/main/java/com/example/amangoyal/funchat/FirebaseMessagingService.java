@@ -2,6 +2,8 @@ package com.example.amangoyal.funchat;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
@@ -22,6 +24,11 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
+        Intent resultIntent = new Intent(clickAction);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this,0,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
 
         //Sets an id for the  notification
         int mNotificationId = (int)System.currentTimeMillis();
