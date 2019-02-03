@@ -22,7 +22,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                         .bigText("Much longer text that cannot fit one line..."))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-        //Sets an id for the notification
+        //Sets an id for the  notification
         int mNotificationId = (int)System.currentTimeMillis();
 
         //Gets an instance for the notification manager service
