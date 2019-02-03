@@ -11,6 +11,9 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        String notificationTitle = remoteMessage.getNotification().getTitle();
+        String notificationBody = remoteMessage.getNotification().getBody();
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("New Friend Request")
