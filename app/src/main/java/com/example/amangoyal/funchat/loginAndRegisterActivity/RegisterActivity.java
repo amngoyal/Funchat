@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import com.example.amangoyal.funchat.MainActivity;
 import com.example.amangoyal.funchat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -101,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("thumb_image", "default");
                             userMap.put("tokenID", FirebaseInstanceId.getInstance().getToken());
 
-                            //Setting values in databse using set value function of firebase DB
+                            //Setting values in database using set value function of firebase DB
                             mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
@@ -115,7 +114,6 @@ public class RegisterActivity extends AppCompatActivity {
                                     } else {
                                         mProgress.dismiss();
                                         Toast.makeText(RegisterActivity.this, "Database failure", Toast.LENGTH_SHORT).show();
-
                                     }
                                 }
                             });
