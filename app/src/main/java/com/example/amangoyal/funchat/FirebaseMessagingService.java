@@ -27,18 +27,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
 
         Intent resultIntent = new Intent(clickAction);
-        resultIntent.putExtra("user_id",from_user_id);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(this,0,resultIntent,PendingIntent.FLAG_UPDATE_CURRENT);
+        resultIntent.putExtra("user_id", from_user_id);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
 
         //Sets an id for the  notification
-        int mNotificationId = (int)System.currentTimeMillis();
+        int mNotificationId = (int) System.currentTimeMillis();
 
         //Gets an instance for the notification manager service
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // Build the notification and issue it
-        notificationManager.notify(mNotificationId,mBuilder.build());
+        notificationManager.notify(mNotificationId, mBuilder.build());
 
 
     }
