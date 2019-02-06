@@ -41,7 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference friendReqDatabaseReference;
     private DatabaseReference friendsDatabaseReference;
     private DatabaseReference mNotificationReference;
-    
+
     private FirebaseUser currentUser;
     private String currentState = "not_friends";
 
@@ -182,24 +182,23 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                                         //Hashmap used to set notification data
-                                        HashMap<String,String> notificationData = new HashMap<>();
-                                        notificationData.put("from",currentUser.getUid());
-                                        notificationData.put("type","request");
+                                        HashMap<String, String> notificationData = new HashMap<>();
+                                        notificationData.put("from", currentUser.getUid());
+                                        notificationData.put("type", "request");
 
                                         mNotificationReference.child(userId).push().setValue(notificationData).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
-                                                if(task.isSuccessful()){
-                                                    Toast.makeText(ProfileActivity.this,"Friend req sent",Toast.LENGTH_SHORT).show();
-                                                }
-                                                else{
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(ProfileActivity.this, "Friend req sent", Toast.LENGTH_SHORT).show();
+                                                } else {
                                                     Log.d(TAG, "onComplete Error: ");
                                                     task.getException().printStackTrace();
-                                                    Toast.makeText(ProfileActivity.this,"error",Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(ProfileActivity.this, "error", Toast.LENGTH_SHORT).show();
                                                 }
                                             }
                                         });
-                                     }
+                                    }
                                 });
 
                                 friend_request_btn.setEnabled(true);
