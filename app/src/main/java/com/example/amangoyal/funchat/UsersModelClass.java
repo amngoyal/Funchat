@@ -32,7 +32,7 @@ public class UsersModelClass {
                 '}';
     }
 
-    public UsersModelClass(String name,String image, String status, String thumb_image, String uid) {
+    public UsersModelClass(String name, String image, String status, String thumb_image, String uid) {
         this.uid = uid;
         this.name = name;
         this.status = status;
