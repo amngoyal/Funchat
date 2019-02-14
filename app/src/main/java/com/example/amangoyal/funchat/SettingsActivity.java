@@ -162,7 +162,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                     .start(this);
         }
-
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
