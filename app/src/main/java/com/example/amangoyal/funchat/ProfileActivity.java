@@ -237,6 +237,10 @@ public class ProfileActivity extends AppCompatActivity {
                     Map reqReceived = new HashMap();
                     reqReceived.put("friends/" + currentUser.getUid() + "/" + userId, currentDate);
                     reqReceived.put("friends/" + userId + "/" + currentUser.getUid() + "/", currentDate);
+                    reqReceived.put("friend_req/" + currentUser.getUid() + "/" + userId + "/request_type", null);
+                    reqReceived.put("friend_req/" + userId + "/" + currentUser.getUid() + "/request_type", null);
+
+                    mrootRef.updateChildren(reqReceived)
 
                     friendsDatabaseReference.child(currentUser.getUid()).child(userId)
                             .setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
