@@ -97,7 +97,7 @@ public class RegisterActivity extends AppCompatActivity {
                             userMap.put("status", "Hi! there I'm using FunChat");
                             userMap.put("image", "default");
                             userMap.put("thumb_image", "default");
-                            userMap.put("tokenID", FirebaseInstanceId.getInstance().getToken());
+                            userMap.put("device_token", FirebaseInstanceId.getInstance().getToken());
 
                             //Setting values in database using set value function of firebase DB
                             mDatabase.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {

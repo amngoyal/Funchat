@@ -73,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
         userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
         friendReqDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friend_req");
         friendsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends");
-        mNotificationReference = FirebaseDatabase.getInstance().getReference().child("notification");
+        mNotificationReference = FirebaseDatabase.getInstance().getReference().child("notifications");
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -130,14 +130,11 @@ public class ProfileActivity extends AppCompatActivity {
                                                 Toast.makeText(ProfileActivity.this, "friends", Toast.LENGTH_SHORT).show();
                                             } else {
                                                 Toast.makeText(ProfileActivity.this, "not_friends", Toast.LENGTH_SHORT).show();
-
                                             }
                                         }
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
-
                                         }
                                     });
                             mProgress.dismiss();
@@ -148,7 +145,6 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                     }
                 });
-
 
             }
 
@@ -179,7 +175,7 @@ public class ProfileActivity extends AppCompatActivity {
                     Map requestMap = new HashMap();
                     requestMap.put("friend_req/" + currentUser.getUid() + "/" + userId + "/request_type", "sent");
                     requestMap.put("friend_req/" + userId + "/" + currentUser.getUid() + "/request_type", "received");
-                    requestMap.put("notification/" + userId + "/" + notificationId, notificationData);
+                    requestMap.put("notifications/" + userId + "/" + notificationId, notificationData);
 
                     mrootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
                         @Override
@@ -206,23 +202,25 @@ public class ProfileActivity extends AppCompatActivity {
                 //----------------------Cancel request---------------------
                 if (currentState.equals("req_sent")) {
 
+                    Map cancelReq = new HashMap();
+                    cancelReq.put("friend_req/" + userId + "/" + currentUser.getUid(), null);
+                    cancelReq.put("friend_req/" + currentUser.getUid() + "/" + userId, null);
 
-                    friendReqDatabaseReference.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mrootRef.updateChildren(cancelReq, new DatabaseReference.CompletionListener() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            friendReqDatabaseReference.child(currentUser.getUid()).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    friend_request_btn.setEnabled(true);
-                                    friend_request_btn.setText("Send Friend request");
-                                    currentState = "not_friends";
-                                    decline_request_btn.setVisibility(View.INVISIBLE);
-                                    decline_request_btn.setEnabled(false);
-                                }
-                            });
-
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                            if (databaseError == null) {
+                                friend_request_btn.setEnabled(true);
+                                friend_request_btn.setText("Send Friend request");
+                                currentState = "not_friends";
+                                decline_request_btn.setVisibility(View.INVISIBLE);
+                                decline_request_btn.setEnabled(false);
+                            } else {
+                                Toast.makeText(ProfileActivity.this, "Error in cancelling request", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
+
 
                 }
 
@@ -245,11 +243,15 @@ public class ProfileActivity extends AppCompatActivity {
                     mrootRef.updateChildren(reqReceived, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                            friend_request_btn.setEnabled(true);
-                            friend_request_btn.setText("Unfriend this person");
-                            currentState = "friends";
-                            decline_request_btn.setVisibility(View.INVISIBLE);
-                            decline_request_btn.setEnabled(false);
+                            if (databaseError == null) {
+                                friend_request_btn.setEnabled(true);
+                                friend_request_btn.setText("Unfriend this person");
+                                currentState = "friends";
+                                decline_request_btn.setVisibility(View.INVISIBLE);
+                                decline_request_btn.setEnabled(false);
+                            } else {
+                                Toast.makeText(ProfileActivity.this, "Eroor in accepting request", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -265,11 +267,15 @@ public class ProfileActivity extends AppCompatActivity {
                     mrootRef.updateChildren(unfriendButton, new DatabaseReference.CompletionListener() {
                         @Override
                         public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                            friend_request_btn.setEnabled(true);
-                            friend_request_btn.setText("Send Friend request");
-                            currentState = "not_friends";
-                            decline_request_btn.setVisibility(View.INVISIBLE);
-                            decline_request_btn.setEnabled(false);
+                            if (databaseError == null) {
+                                friend_request_btn.setEnabled(true);
+                                friend_request_btn.setText("Send Friend request");
+                                currentState = "not_friends";
+                                decline_request_btn.setVisibility(View.INVISIBLE);
+                                decline_request_btn.setEnabled(false);
+                            } else {
+                                Toast.makeText(ProfileActivity.this, "Error in unfriend process", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
 
@@ -290,12 +296,16 @@ public class ProfileActivity extends AppCompatActivity {
                 mrootRef.updateChildren(declineReq, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        if (databaseError == null) {
 
-                        friend_request_btn.setEnabled(true);
-                        friend_request_btn.setText("Send Friend request");
-                        currentState = "not_friends";
-                        decline_request_btn.setVisibility(View.INVISIBLE);
-                        decline_request_btn.setEnabled(false);
+                            friend_request_btn.setEnabled(true);
+                            friend_request_btn.setText("Send Friend request");
+                            currentState = "not_friends";
+                            decline_request_btn.setVisibility(View.INVISIBLE);
+                            decline_request_btn.setEnabled(false);
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Error in declining friend req", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
