@@ -225,7 +225,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 }
 
-                //----------------------------Accept friend request-----------------------
+                //----------------------------Friend request received-----------------------
                 if (currentState.equals("req_received")) {
                     DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
                     dateFormatter.setLenient(false);
@@ -233,6 +233,10 @@ public class ProfileActivity extends AppCompatActivity {
                     final String currentDate = dateFormatter.format(today);
                     //   final String currentDat = DateFormat.getDateInstance().format(new Date());
 
+
+                    Map reqReceived = new HashMap();
+                    reqReceived.put("friends/" + currentUser.getUid() + "/" + userId, currentDate);
+                    reqReceived.put("friends/" + userId + "/" + currentUser.getUid() + "/", currentDate);
 
                     friendsDatabaseReference.child(currentUser.getUid()).child(userId)
                             .setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
