@@ -258,11 +258,13 @@ public class SettingsActivity extends AppCompatActivity {
 
                         } else
                             Toast.makeText(SettingsActivity.this, "Error in uploding", Toast.LENGTH_SHORT).show();
-                        mProgressDialogue.dismiss();
+                            mProgressDialogue.dismiss();
                     }
                 });
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
+                Exception er;
+
+                er = result.getError();
             }
         }
     }

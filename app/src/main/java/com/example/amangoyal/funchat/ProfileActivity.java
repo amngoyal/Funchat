@@ -2,6 +2,7 @@ package com.example.amangoyal.funchat;
 
 import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference friendReqDatabaseReference;
     private DatabaseReference friendsDatabaseReference;
     private DatabaseReference mNotificationReference;
+    private DatabaseReference mrootRef;
 
     private FirebaseUser currentUser;
     private String currentState = "not_friends";
@@ -67,6 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         mProgress.show();
 
 
+        mrootRef = FirebaseDatabase.getInstance().getReference();
         userDatabaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(userId);
         friendReqDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friend_req");
         friendsDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends");
@@ -164,50 +167,38 @@ public class ProfileActivity extends AppCompatActivity {
 
                 //----------------------Send friend request-------------
                 if (currentState.equals("not_friends")) {
-                    friendReqDatabaseReference.child(currentUser.getUid()).child(userId).child("request_type")
-                            .setValue("sent").addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    DatabaseReference newNotificationrefrence = mNotificationReference.child(userId).push();
+                    String notificationId = newNotificationrefrence.getKey();
+
+                    //Hashmap used to set notification data
+                    HashMap<String, String> notificationData = new HashMap<>();
+                    notificationData.put("from", currentUser.getUid());
+                    notificationData.put("type", "request");
+
+                    Map requestMap = new HashMap();
+                    requestMap.put("friend_req" + currentUser.getUid() + "/" + userId + "request_type", "sent");
+                    requestMap.put("friend_req" + userId + "/" + currentUser.getUid() + "/" + "request_type", "received");
+                    requestMap.put("notification/" + userId + "/" + notificationId, notificationData);
+
+                    mrootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
 
-                                friendReqDatabaseReference.child(userId).child(currentUser.getUid()).child("request_type")
-                                        .setValue("received").addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-
-                                        currentState = "req_sent";
-                                        friend_request_btn.setText("Cancel friend request");
-                                        decline_request_btn.setVisibility(View.INVISIBLE);
-                                        decline_request_btn.setEnabled(false);
-
-
-                                        //Hashmap used to set notification data
-                                        HashMap<String, String> notificationData = new HashMap<>();
-                                        notificationData.put("from", currentUser.getUid());
-                                        notificationData.put("type", "request");
-
-                                        mNotificationReference.child(userId).push().setValue(notificationData).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(ProfileActivity.this, "Friend req sent", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Log.d(TAG, "onComplete Error: ");
-                                                    task.getException().printStackTrace();
-                                                    Toast.makeText(ProfileActivity.this, "error", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-
-                                friend_request_btn.setEnabled(true);
-
+                            if (databaseError != null) {
+                                Toast.makeText(ProfileActivity.this, "Error in sending Req", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(ProfileActivity.this, "Failed Sending request", Toast.LENGTH_SHORT).show();
+                                currentState = "req_sent";
+                                friend_request_btn.setText("Cancel friend request");
+                                decline_request_btn.setVisibility(View.INVISIBLE);
+                                decline_request_btn.setEnabled(false);
+
+                                Toast.makeText(ProfileActivity.this, "Friend req sent", Toast.LENGTH_SHORT).show();
                             }
+
                         }
                     });
+
 
                 }
 
