@@ -192,6 +192,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 friend_request_btn.setText("Cancel friend request");
                                 decline_request_btn.setVisibility(View.INVISIBLE);
                                 decline_request_btn.setEnabled(false);
+                                friend_request_btn.setEnabled(true);
 
                                 Toast.makeText(ProfileActivity.this, "Friend req sent", Toast.LENGTH_SHORT).show();
                             }
@@ -225,7 +226,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 }
 
-                //----------------------------Friend request received-----------------------
+                //----------------------------Friend request received state-----------------------
                 if (currentState.equals("req_received")) {
                     DateFormat dateFormatter = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
                     dateFormatter.setLenient(false);
@@ -237,87 +238,67 @@ public class ProfileActivity extends AppCompatActivity {
                     Map reqReceived = new HashMap();
                     reqReceived.put("friends/" + currentUser.getUid() + "/" + userId, currentDate);
                     reqReceived.put("friends/" + userId + "/" + currentUser.getUid() + "/", currentDate);
+
                     reqReceived.put("friend_req/" + currentUser.getUid() + "/" + userId + "/request_type", null);
                     reqReceived.put("friend_req/" + userId + "/" + currentUser.getUid() + "/request_type", null);
 
-                    mrootRef.updateChildren(reqReceived)
-
-                    friendsDatabaseReference.child(currentUser.getUid()).child(userId)
-                            .setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    mrootRef.updateChildren(reqReceived, new DatabaseReference.CompletionListener() {
                         @Override
-                        public void onSuccess(Void aVoid) {
-
-                            friendsDatabaseReference.child(userId).child(currentUser.getUid())
-                                    .setValue(currentDate).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-
-                                    friendReqDatabaseReference.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            friendReqDatabaseReference.child(currentUser.getUid()).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    friend_request_btn.setEnabled(true);
-                                                    friend_request_btn.setText("Unfriend this person");
-                                                    currentState = "friends";
-                                                    decline_request_btn.setVisibility(View.INVISIBLE);
-                                                    decline_request_btn.setEnabled(false);
-
-                                                }
-                                            });
-
-                                        }
-                                    });
-                                }
-                            });
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                            friend_request_btn.setEnabled(true);
+                            friend_request_btn.setText("Unfriend this person");
+                            currentState = "friends";
+                            decline_request_btn.setVisibility(View.INVISIBLE);
+                            decline_request_btn.setEnabled(false);
                         }
                     });
+
+
                 }
 
                 //--------------------------------Unfriend--------------------------------
                 if (currentState.equals("friends")) {
-                    friendsDatabaseReference.child(currentUser.getUid()).child(userId).removeValue()
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    friendsDatabaseReference.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            friend_request_btn.setEnabled(true);
-                                            friend_request_btn.setText("Send Friend request");
-                                            currentState = "not_friends";
-                                            decline_request_btn.setVisibility(View.INVISIBLE);
-                                            decline_request_btn.setEnabled(false);
-                                        }
-                                    });
-                                }
-                            });
+                    Map unfriendButton = new HashMap();
+                    unfriendButton.put("friends/" + currentUser.getUid() + "/" + userId, null);
+                    unfriendButton.put("friends/" + userId + "/" + currentUser.getUid(), null);
+
+                    mrootRef.updateChildren(unfriendButton, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                            friend_request_btn.setEnabled(true);
+                            friend_request_btn.setText("Send Friend request");
+                            currentState = "not_friends";
+                            decline_request_btn.setVisibility(View.INVISIBLE);
+                            decline_request_btn.setEnabled(false);
+                        }
+                    });
 
                 }
 
             }
         });
 
+
         decline_request_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                friendReqDatabaseReference.child(userId).child(currentUser.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        friendReqDatabaseReference.child(currentUser.getUid()).child(userId).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                friend_request_btn.setEnabled(true);
-                                friend_request_btn.setText("Send Friend request");
-                                currentState = "not_friends";
-                                decline_request_btn.setVisibility(View.INVISIBLE);
-                                decline_request_btn.setEnabled(false);
-                            }
-                        });
 
+                Map declineReq = new HashMap();
+                declineReq.put("friend_req/" + userId + "/" + currentUser.getUid(), null);
+                declineReq.put("friend_req/" + currentUser.getUid() + "/" + userId, null);
+
+                mrootRef.updateChildren(declineReq, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+
+                        friend_request_btn.setEnabled(true);
+                        friend_request_btn.setText("Send Friend request");
+                        currentState = "not_friends";
+                        decline_request_btn.setVisibility(View.INVISIBLE);
+                        decline_request_btn.setEnabled(false);
                     }
                 });
+
             }
         });
     }
