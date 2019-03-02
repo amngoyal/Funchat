@@ -177,8 +177,8 @@ public class ProfileActivity extends AppCompatActivity {
                     notificationData.put("type", "request");
 
                     Map requestMap = new HashMap();
-                    requestMap.put("friend_req" + currentUser.getUid() + "/" + userId + "request_type", "sent");
-                    requestMap.put("friend_req" + userId + "/" + currentUser.getUid() + "/" + "request_type", "received");
+                    requestMap.put("friend_req/" + currentUser.getUid() + "/" + userId + "/request_type", "sent");
+                    requestMap.put("friend_req/" + userId + "/" + currentUser.getUid() + "/request_type", "received");
                     requestMap.put("notification/" + userId + "/" + notificationId, notificationData);
 
                     mrootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
