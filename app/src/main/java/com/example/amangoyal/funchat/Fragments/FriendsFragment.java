@@ -42,13 +42,15 @@ public class FriendsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mMainView =  inflater.inflate(R.layout.fragment_friends, container, false);
+        mMainView = inflater.inflate(R.layout.fragment_friends, container, false);
         mFriendlist = mMainView.findViewById(R.id.friends_recycler_view);
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getCurrentUser().getUid();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends").child(mCurrentUserId);
 
         mFriendlist.setHasFixedSize(true);
+        mFriendlist.setLayoutManager(new LinearLayoutManager(getContext()));
+        return mMainView;
     }
 
 }
