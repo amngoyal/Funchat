@@ -18,6 +18,7 @@ import com.example.amangoyal.funchat.UsersModelClass;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +26,13 @@ import java.util.List;
 
 public class FriendsFragment extends Fragment {
 
-    private Toolbar toolbar;
+
+    private RecyclerView mFriendlist;
+    private DatabaseReference mDatabaseReference;
     private FirebaseAuth mAuth;
-    private RecyclerView mRecyclerView;
-    private DatabaseReference databaseReference;
-    private ProgressDialog mProgress;
-    private LinearLayoutManager linearLayoutManager;
-    private FirebaseRecyclerAdapter adapter;
-    private AllUsersListAdapter allUsersListAdapter;
-    private List<UsersModelClass> usersList = new ArrayList<>();
+    private String mCurrentUserId;
+    private View mMainView;
+
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -42,8 +41,14 @@ public class FriendsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friends, container, false);
+
+        mMainView =  inflater.inflate(R.layout.fragment_friends, container, false);
+        mFriendlist = mMainView.findViewById(R.id.friends_recycler_view);
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUserId = mAuth.getCurrentUser().getUid();
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends").child(mCurrentUserId);
+
+        mFriendlist.setHasFixedSize(true);
     }
 
 }
