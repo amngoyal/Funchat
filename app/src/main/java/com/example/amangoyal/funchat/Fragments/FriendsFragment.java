@@ -64,40 +64,7 @@ public class FriendsFragment extends Fragment {
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        Query queuy = FirebaseDatabase.getInstance().getReference().child("friends");
-
-        FirebaseRecyclerOptions<Friends> friendsFirebaseRecyclerOptions = new FirebaseRecyclerOptions.Builder<Friends>()
-                .setQuery(queuy, new SnapshotParser<Friends>() {
-                    @NonNull
-                    @Override
-                    public Friends parseSnapshot(@NonNull DataSnapshot snapshot) {
-                        return new Friends(snapshot.child(mCurrentUserId).);
-                    }
-                });
-        FirebaseRecyclerAdapter<Friends,FriendsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Friends, FriendsViewHolder>(
-                Friends.class,
-                R.layout.single_user_layout,
-                mDatabaseReference,
-                FriendsViewHolder.class
-
-
-        ) {
-            @Override
-            protected void onBindViewHolder(@NonNull FriendsViewHolder holder, int position, @NonNull Friends model) {
-
-            }
-
-            @NonNull
-            @Override
-            public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-                return null;
-            }
-        };
-    }
 
     public static class FriendsViewHolder extends RecyclerView.ViewHolder{
 
