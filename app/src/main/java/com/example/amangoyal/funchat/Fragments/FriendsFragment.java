@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,4 +54,41 @@ public class FriendsFragment extends Fragment {
         return mMainView;
     }
 
+    public void fetch(){
+        
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        FirebaseRecyclerAdapter<Friends,FriendsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Friends, FriendsViewHolder>(
+                Friends.class,
+                mDatabaseReference,
+                mDatabaseReference,
+                FriendsViewHolder.class
+
+
+        ) {
+            @Override
+            protected void onBindViewHolder(@NonNull FriendsViewHolder holder, int position, @NonNull Friends model) {
+
+            }
+
+            @NonNull
+            @Override
+            public FriendsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+                return null;
+            }
+        };
+    }
+
+    public static class FriendsViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+
+        public FriendsViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
 }
