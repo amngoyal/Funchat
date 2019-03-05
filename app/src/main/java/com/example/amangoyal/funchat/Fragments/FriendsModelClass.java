@@ -1,6 +1,6 @@
 package com.example.amangoyal.funchat.Fragments;
 
-class Friends {
+class FriendsModelClass {
 
     private String date;
 

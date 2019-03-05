@@ -1,36 +1,25 @@
 package com.example.amangoyal.funchat.Fragments;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.amangoyal.funchat.AllUsersListAdapter;
 import com.example.amangoyal.funchat.R;
-import com.example.amangoyal.funchat.UsersModelClass;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.firebase.ui.database.SnapshotParser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.Map;
 
 
 public class FriendsFragment extends Fragment {
@@ -41,6 +30,7 @@ public class FriendsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private String mCurrentUserId;
     private View mMainView;
+    private ArrayList arrayList;
 
 
     public FriendsFragment() {
@@ -55,7 +45,7 @@ public class FriendsFragment extends Fragment {
         mFriendlist = mMainView.findViewById(R.id.friends_recycler_view);
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getCurrentUser().getUid();
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends").child(mCurrentUserId);
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends");
 
         mFriendlist.setHasFixedSize(true);
         mFriendlist.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -68,15 +58,21 @@ public class FriendsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot data : dataSnapshot.getChildren()){
-                    data.child(mCurrentUserId).getValue().toString();
+                   Map<String,Object> Values = (Map<String, Object>) data.child(mCurrentUserId).getValue();
+
+                   FriendsModelClass friendsData = new FriendsModelClass();
+                   arrayList.add(friendsData);
+
                 }
+
+
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        })
+        });
     }
 
 
