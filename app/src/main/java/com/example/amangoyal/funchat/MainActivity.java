@@ -14,7 +14,7 @@ import com.example.amangoyal.funchat.loginAndRegisterActivity.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends AppCompatActivity implements FriendsFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity  {
     private FirebaseAuth mAuth;
     private android.support.v7.widget.Toolbar mToolbar;
     private ViewPager mViewPager;
@@ -82,8 +82,4 @@ public class MainActivity extends AppCompatActivity implements FriendsFragment.O
         return true;
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,19 +50,20 @@ public class FriendsFragment extends Fragment {
 
         mFriendlist.setHasFixedSize(true);
         mFriendlist.setLayoutManager(new LinearLayoutManager(getContext()));
+        fetch();
         return mMainView;
     }
 
     public void fetch(){
 
-        mDatabaseReference.addValueEventListener(new ValueEventListener() {
+        mDatabaseReference.child(mCurrentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot data : dataSnapshot.getChildren()){
-                   Map<String,Object> Values = (Map<String, Object>) data.child(mCurrentUserId).getValue();
 
-                   FriendsModelClass friendsData = new FriendsModelClass();
-                   arrayList.add(friendsData);
+                    Log.d("aaaa",data.getKey());
+                    String friendUserId = data.getKey();
+                    Log.d("bbbb",friendUserId);
 
                 }
 
