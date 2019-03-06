@@ -73,6 +73,7 @@ public class FriendsFragment extends Fragment {
 
                 }
 
+                FriendListAdapter friendListAdapter = new FriendListAdapter(arrayList);
 
             }
 

@@ -17,6 +17,11 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     private List<FriendsModelClass> friendsList;
     private Context context;
 
+    void FriendListAdapter(List<FriendsModelClass> friendsList){
+        this.friendsList = friendsList;
+
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
