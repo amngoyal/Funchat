@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -32,7 +33,7 @@ public class FriendsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private String mCurrentUserId;
     private View mMainView;
-    private ArrayList arrayList;
+    private List<FriendsModelClass> arrayList;
 
 
     public FriendsFragment() {
@@ -74,6 +75,7 @@ public class FriendsFragment extends Fragment {
                 }
 
                 FriendListAdapter friendListAdapter = new FriendListAdapter(arrayList);
+                mFriendlist.setAdapter(friendListAdapter);
 
             }
 

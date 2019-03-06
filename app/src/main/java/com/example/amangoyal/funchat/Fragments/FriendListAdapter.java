@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.amangoyal.funchat.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
@@ -17,10 +18,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     private List<FriendsModelClass> friendsList;
     private Context context;
 
-    void FriendListAdapter(List<FriendsModelClass> friendsList){
+    public FriendListAdapter(List<FriendsModelClass> friendsList) {
         this.friendsList = friendsList;
-
     }
+
 
     @NonNull
     @Override
