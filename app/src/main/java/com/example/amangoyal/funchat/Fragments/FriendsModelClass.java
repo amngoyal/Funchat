@@ -3,14 +3,12 @@ package com.example.amangoyal.funchat.Fragments;
 class FriendsModelClass {
 
     private String date;
+    private String name;
 
-    void Friends() {
-
-    }
-
-    void Friends(String date){
+    public FriendsModelClass(String date) {
         this.date = date;
     }
+
     public String getDate() {
         return date;
     }

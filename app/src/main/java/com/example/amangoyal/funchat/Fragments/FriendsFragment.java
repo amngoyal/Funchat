@@ -55,18 +55,21 @@ public class FriendsFragment extends Fragment {
         return mMainView;
     }
 
-    public void fetch(){
+    public void fetch() {
 
         mDatabaseReference.child(mCurrentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot data : dataSnapshot.getChildren()){
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
 
-                    Log.d("aaaa",data.getKey());
+                    Log.d("aaaa", data.getKey());
                     String friendUserId = data.getKey();
                     Log.d("bbbb", data.getValue().toString());
+                    String date = data.getValue().toString();
 
+                    FriendsModelClass friend = new FriendsModelClass(date);
 
+                    arrayList.add(friend);
 
                 }
 
@@ -80,19 +83,4 @@ public class FriendsFragment extends Fragment {
         });
     }
 
-
-
-    public static class FriendsViewHolder extends RecyclerView.ViewHolder{
-
-        View mView;
-
-        public FriendsViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
-
-        public void setDate(String date){
-            TextView userNameView = mView.findViewById(R.id.list_desc);
-            userNameView.setText(date);
-        }
-    }
 }
