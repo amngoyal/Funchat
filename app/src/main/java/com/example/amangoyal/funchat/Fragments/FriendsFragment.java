@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.amangoyal.funchat.R;
+import com.example.amangoyal.funchat.UsersModelClass;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,7 +64,9 @@ public class FriendsFragment extends Fragment {
 
                     Log.d("aaaa",data.getKey());
                     String friendUserId = data.getKey();
-                    Log.d("bbbb",friendUserId);
+                    Log.d("bbbb", data.getValue().toString());
+
+
 
                 }
 
