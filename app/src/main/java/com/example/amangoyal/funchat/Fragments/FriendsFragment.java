@@ -104,6 +104,7 @@ public class FriendsFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+
             }
         });
     }
