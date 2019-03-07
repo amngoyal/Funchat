@@ -61,7 +61,7 @@ public class FriendsFragment extends Fragment {
         mDatabaseReference.child(mCurrentUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                for (final DataSnapshot data : dataSnapshot.getChildren()) {
 
                     Log.d("aaaa", data.getKey());
 
@@ -83,7 +83,8 @@ public class FriendsFragment extends Fragment {
                                     dataSnapshot.child("image").getValue().toString(),
                                     date,
                                     dataSnapshot.child("thumb_image").getValue().toString(),
-                                    friendUserId
+                                    friendUserId,
+                                    dataSnapshot.child("online").getValue().toString()
 
                             );
 

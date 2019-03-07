@@ -43,6 +43,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         holder.setTextName(user.getName());
         holder.setTextDate(user.getDate());
         holder.setImage(user.getThumb_image());
+        holder.setOnlineStatusImage(user.getOnlineStatus());
 
         final String user_id = user.getUid();
 
@@ -64,10 +65,11 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public LinearLayout root;
-        public TextView tname;
-        public TextView tdate;
-        public CircleImageView imageView;
+        private LinearLayout root;
+        TextView tname;
+        TextView tdate;
+        CircleImageView imageView, onlineStatusImage;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,8 +77,16 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             root = itemView.findViewById(R.id.list_root);
             tname = itemView.findViewById(R.id.list_title);
             tdate = itemView.findViewById(R.id.list_desc);
+            onlineStatusImage = itemView.findViewById(R.id.online_status);
+
             imageView = itemView.findViewById(R.id.single_user_image);
 
+        }
+
+        public void setOnlineStatusImage(String status) {
+            if (status.equals("true")) {
+                Picasso.get().load(R.drawable.color_green).into(onlineStatusImage);
+            }
         }
 
         public void setTextName(String name) {

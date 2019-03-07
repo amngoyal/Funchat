@@ -12,6 +12,16 @@ public class FriendsModelClass {
     private String date;
     private String thumb_image;
 
+    public String getOnlineStatus() {
+        return OnlineStatus;
+    }
+
+    public void setOnlineStatus(String onlineStatus) {
+        OnlineStatus = onlineStatus;
+    }
+
+    private String OnlineStatus;
+
     public String getThumb_image() {
         return thumb_image;
     }
@@ -31,7 +41,7 @@ public class FriendsModelClass {
                 '}';
     }
 
-    public FriendsModelClass(String name, String image, String status, String thumb_image, String uid) {
+    public FriendsModelClass(String name, String image, String status, String thumb_image, String uid,String onlineStatus) {
         this.uid = uid;
         this.name = name;
         this.date = status;

@@ -226,7 +226,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     String deviceToken = FirebaseInstanceId.getInstance().getToken();
                     String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                    databaseReference.child(currentUser).child("tokenID").setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    databaseReference.child(currentUser).child("device_token").setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful()){
