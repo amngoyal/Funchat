@@ -34,6 +34,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         View view = LayoutInflater.from(context).inflate(R.layout.single_user_layout, viewGroup, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
+
     }
 
     @Override

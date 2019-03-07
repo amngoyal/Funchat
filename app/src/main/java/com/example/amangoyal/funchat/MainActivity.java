@@ -13,6 +13,8 @@ import com.example.amangoyal.funchat.Fragments.FriendsFragment;
 import com.example.amangoyal.funchat.loginAndRegisterActivity.StartActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity  {
     private FirebaseAuth mAuth;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity  {
     private ViewPager mViewPager;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private TabLayout mTabLayout;
+    private DatabaseReference mUserref;
 
     /* This is the main activity where all the chats and friends are shown in different fragments */
 
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
+        mUserref = FirebaseDatabase.getInstance().getReference();
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("FUN CHAT");
@@ -48,6 +52,9 @@ public class MainActivity extends AppCompatActivity  {
         if (currentUser == null) {
             sendToStart();
             finish();
+        }
+        else{
+            mUserref.child("online").setValue(true);
         }
     }
 
@@ -82,4 +89,12 @@ public class MainActivity extends AppCompatActivity  {
         return true;
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FirebaseUser mUser = mAuth.getCurrentUser();
+        if(mUser != null){
+            mUserref.child("online").setValue(true);
+        }
+    }
 }

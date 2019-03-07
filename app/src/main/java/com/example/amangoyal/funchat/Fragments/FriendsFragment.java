@@ -32,7 +32,7 @@ public class FriendsFragment extends Fragment {
     private View mMainView;
     private DatabaseReference usersDatabaseRef;
     private List<FriendsModelClass> arrayList = new ArrayList<>();
-
+    private FriendListAdapter friendListAdapter;
 
     public FriendsFragment() {
         // Required empty public constructor
@@ -52,6 +52,7 @@ public class FriendsFragment extends Fragment {
         mFriendlist.setHasFixedSize(true);
         mFriendlist.setLayoutManager(new LinearLayoutManager(getContext()));
         fetch();
+
         return mMainView;
     }
 
@@ -63,8 +64,11 @@ public class FriendsFragment extends Fragment {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
 
                     Log.d("aaaa", data.getKey());
+
                     final String friendUserId = data.getKey();
+
                     Log.d("bbbb", data.getValue().toString());
+
                     final String date = data.getValue().toString();
 
 
@@ -72,41 +76,37 @@ public class FriendsFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            Log.d("alldata",dataSnapshot.getValue().toString());
-                          FriendsModelClass Friends = new FriendsModelClass(
-                                  dataSnapshot.child("name").getValue().toString(),
-                                  dataSnapshot.child("image").getValue().toString(),
-                                  date,
-                                  dataSnapshot.child("thumb_image").getValue().toString(),
-                                  friendUserId
+                            Log.d("alldata", dataSnapshot.getValue().toString());
 
-                          );
+                            FriendsModelClass friend = new FriendsModelClass(
+                                    dataSnapshot.child("name").getValue().toString(),
+                                    dataSnapshot.child("image").getValue().toString(),
+                                    date,
+                                    dataSnapshot.child("thumb_image").getValue().toString(),
+                                    friendUserId
 
-                          Log.d("alldata",Friends.getName());
-                          arrayList.add(Friends);
+                            );
 
+                            Log.d("alldata", friend.getName());
+                            arrayList.add(friend);
+                            friendListAdapter.notifyDataSetChanged();
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
-
                         }
                     });
-
-
                 }
-
-                FriendListAdapter friendListAdapter = new FriendListAdapter(getContext(),arrayList);
-                mFriendlist.setAdapter(friendListAdapter);
-
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
-
             }
         });
+
+        friendListAdapter = new FriendListAdapter(getContext(), arrayList);
+        mFriendlist.setAdapter(friendListAdapter);
+
     }
 
 }
