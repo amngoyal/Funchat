@@ -6,12 +6,10 @@
     tools:context=".Fragments.FriendsFragment">
 
 
-    <include layout="@layout/app_bar_layout"
-        android:id="@+id/alluser_toolbar"/>
-
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F1E192"
         android:id="@+id/friends_recycler_view">
 
     </android.support.v7.widget.RecyclerView>

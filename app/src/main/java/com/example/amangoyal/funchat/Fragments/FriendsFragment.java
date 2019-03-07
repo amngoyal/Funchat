@@ -9,10 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.amangoyal.funchat.R;
-import com.example.amangoyal.funchat.UsersModelClass;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,7 +20,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class FriendsFragment extends Fragment {
@@ -33,7 +30,8 @@ public class FriendsFragment extends Fragment {
     private FirebaseAuth mAuth;
     private String mCurrentUserId;
     private View mMainView;
-    private List<FriendsModelClass> arrayList;
+    private DatabaseReference usersDatabaseRef;
+    private List<FriendsModelClass> arrayList = new ArrayList<>();
 
 
     public FriendsFragment() {
@@ -49,6 +47,7 @@ public class FriendsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getCurrentUser().getUid();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends");
+        usersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("users");
 
         mFriendlist.setHasFixedSize(true);
         mFriendlist.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -64,17 +63,40 @@ public class FriendsFragment extends Fragment {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
 
                     Log.d("aaaa", data.getKey());
-                    String friendUserId = data.getKey();
+                    final String friendUserId = data.getKey();
                     Log.d("bbbb", data.getValue().toString());
-                    String date = data.getValue().toString();
+                    final String date = data.getValue().toString();
 
-                    FriendsModelClass friend = new FriendsModelClass(date);
 
-                    arrayList.add(friend);
+                    usersDatabaseRef.child(friendUserId).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            Log.d("alldata",dataSnapshot.getValue().toString());
+                          FriendsModelClass Friends = new FriendsModelClass(
+                                  dataSnapshot.child("name").getValue().toString(),
+                                  dataSnapshot.child("image").getValue().toString(),
+                                  date,
+                                  dataSnapshot.child("thumb_image").getValue().toString(),
+                                  friendUserId
+
+                          );
+
+                          Log.d("alldata",Friends.getName());
+                          arrayList.add(Friends);
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
 
                 }
 
-                FriendListAdapter friendListAdapter = new FriendListAdapter(arrayList);
+                FriendListAdapter friendListAdapter = new FriendListAdapter(getContext(),arrayList);
                 mFriendlist.setAdapter(friendListAdapter);
 
             }
