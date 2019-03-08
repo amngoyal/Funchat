@@ -57,7 +57,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                 CharSequence charSequence[] = new CharSequence[]{"Open Profile", "Send Message"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Select Options");
+                builder.setTitle("Select Option");
                 builder.setItems(charSequence, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -68,6 +68,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                         }
                     }
                 });
+                builder.show();
             }
         });
     }
