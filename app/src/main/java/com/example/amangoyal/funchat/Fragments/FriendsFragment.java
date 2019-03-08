@@ -84,11 +84,11 @@ public class FriendsFragment extends Fragment {
                                     date,
                                     dataSnapshot.child("thumb_image").getValue().toString(),
                                     friendUserId,
-                                    dataSnapshot.child("online").getValue().toString()
+                                    dataSnapshot.child("name").getValue().toString()
 
                             );
 
-                            Log.d("alldata", friend.getName());
+                            Log.d("alldata", dataSnapshot.child("online").getValue().toString());
                             arrayList.add(friend);
                             friendListAdapter.notifyDataSetChanged();
                         }

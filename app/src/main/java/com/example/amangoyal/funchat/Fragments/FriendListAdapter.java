@@ -1,9 +1,13 @@
 package com.example.amangoyal.funchat.Fragments;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AlertDialogLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,9 +54,20 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         holder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ProfileActivity.class);
-                intent.putExtra("user_id", user_id);
-                context.startActivity(intent);
+                CharSequence charSequence[] = new CharSequence[]{"Open Profile", "Send Message"};
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Select Options");
+                builder.setItems(charSequence, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            Intent intent = new Intent(context, ProfileActivity.class);
+                            intent.putExtra("user_id", user_id);
+                            context.startActivity(intent);
+                        }
+                    }
+                });
             }
         });
     }
@@ -84,9 +99,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         }
 
         public void setOnlineStatusImage(String status) {
-            if (status.equals("true")) {
-                Picasso.get().load(R.drawable.color_green).into(onlineStatusImage);
-            }
+
+            Picasso.get().load(R.drawable.color_green).into(onlineStatusImage);
         }
 
         public void setTextName(String name) {

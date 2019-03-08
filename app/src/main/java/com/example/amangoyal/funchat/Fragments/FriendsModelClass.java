@@ -41,12 +41,13 @@ public class FriendsModelClass {
                 '}';
     }
 
-    public FriendsModelClass(String name, String image, String status, String thumb_image, String uid,String onlineStatus) {
+    public FriendsModelClass(String name, String image, String status, String thumb_image, String uid, String onlineStatus) {
         this.uid = uid;
         this.name = name;
         this.date = status;
         this.image = image;
         this.thumb_image = thumb_image;
+        this.OnlineStatus = onlineStatus;
     }
 
 
