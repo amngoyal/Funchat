@@ -14,8 +14,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.amangoyal.funchat.ChatActivity;
 import com.example.amangoyal.funchat.ProfileActivity;
 import com.example.amangoyal.funchat.R;
+import com.example.amangoyal.funchat.loginAndRegisterActivity.StartActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -42,7 +44,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int i) {
         FriendsModelClass user = FriendsList.get(i);
         holder.setTextName(user.getName());
         holder.setTextDate(user.getDate());
@@ -65,6 +67,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                             Intent intent = new Intent(context, ProfileActivity.class);
                             intent.putExtra("user_id", user_id);
                             context.startActivity(intent);
+                        }
+                        if(which == 1){
+                           Intent intent = new Intent(context, ChatActivity.class);
+                           context.startActivity(intent);
                         }
                     }
                 });
