@@ -70,6 +70,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                         }
                         if(which == 1){
                            Intent intent = new Intent(context, ChatActivity.class);
+                           intent.putExtra("user_id",user_id);
                            context.startActivity(intent);
                         }
                     }
