@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 public class MainActivity extends AppCompatActivity  {
     private FirebaseAuth mAuth;
@@ -32,7 +33,8 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
 
         mAuth = FirebaseAuth.getInstance();
-        mUserref = FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid());
+        mUserref = FirebaseDatabase.getInstance().getReference();
+
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("FUN CHAT");
@@ -45,18 +47,7 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            sendToStart();
-            finish();
-        }
-        else{
-            mUserref.child("online").setValue(true);
-        }
-    }
+
 
     public void sendToStart() {
         startActivity(new Intent(this, StartActivity.class));
@@ -88,13 +79,24 @@ public class MainActivity extends AppCompatActivity  {
 
         return true;
     }
-
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            sendToStart();
+            finish();
+        }
+        else{
+            mUserref.child("users").child(currentUser.getUid()).child("online").setValue("true");
+        }
+    }
     @Override
     protected void onStop() {
         super.onStop();
         FirebaseUser mUser = mAuth.getCurrentUser();
         if(mUser != null){
-            mUserref.child("online").setValue(true);
+            mUserref.child("users").child(mUser.getUid()).child("online").setValue(ServerValue.TIMESTAMP);
         }
     }
 }

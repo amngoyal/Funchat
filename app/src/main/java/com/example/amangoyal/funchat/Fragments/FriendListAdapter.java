@@ -45,7 +45,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int i) {
-        FriendsModelClass user = FriendsList.get(i);
+        final FriendsModelClass user = FriendsList.get(i);
         holder.setTextName(user.getName());
         holder.setTextDate(user.getDate());
         holder.setImage(user.getThumb_image());
@@ -71,6 +71,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
                         if(which == 1){
                            Intent intent = new Intent(context, ChatActivity.class);
                            intent.putExtra("user_id",user_id);
+                           intent.putExtra("userName",user.getName());
                            context.startActivity(intent);
                         }
                     }
