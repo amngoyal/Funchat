@@ -2,10 +2,12 @@ package com.example.amangoyal.funchat;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -98,10 +100,22 @@ public class ChatActivity extends AppCompatActivity {
         mRootRef.child("chat").child(mCurrentUser).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild(mChatUser)) {
+                if (!dataSnapshot.hasChild(mChatUser)) {
                     Map chatAddMap = new HashMap();
                     chatAddMap.put("seen",false);
                     chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
+
+                    Map chatUserMap = new HashMap();
+                    chatUserMap.put("chat/"+mCurrentUser+"/"+mChatUser,chatAddMap);
+                    chatUserMap.put("chat/"+mChatUser+"/"+mCurrentUser,chatAddMap);
+
+                    mRootRef.updateChildren(chatAddMap, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+
+                            Log.d("chatError",databaseError.getMessage().toString());
+                        }
+                    });
                 }
             }
 
