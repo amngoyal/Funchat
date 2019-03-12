@@ -10,12 +10,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -28,6 +33,8 @@ public class ChatActivity extends AppCompatActivity {
     private String userName;
     private TextView nameView, lastSeenView;
     private CircleImageView circleImageView;
+    private FirebaseAuth mAuth;
+    private String mCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +43,8 @@ public class ChatActivity extends AppCompatActivity {
 
         mChatUser = getIntent().getStringExtra("user_id");
         userName = getIntent().getStringExtra("userName");
+        mAuth = FirebaseAuth.getInstance();
+        mCurrentUser = mAuth.getCurrentUser().getUid();
 
         mRootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -72,12 +81,28 @@ public class ChatActivity extends AppCompatActivity {
 
 
                     long lastTime = Long.parseLong(lastOnlineTime);
-                    String lastSeenTime =  GetTimeAgo.getTimeAgo(lastTime,getApplicationContext());
+                    String lastSeenTime = GetTimeAgo.getTimeAgo(lastTime, getApplicationContext());
 
                     lastSeenView.setText(lastSeenTime);
                 }
 
                 Picasso.get().load(image).placeholder(R.drawable.default_avatar).into(circleImageView);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mRootRef.child("chat").child(mCurrentUser).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild(mChatUser)) {
+                    Map chatAddMap = new HashMap();
+                    chatAddMap.put("seen",false);
+                    chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
+                }
             }
 
             @Override

@@ -88,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity {
                 //    Toast.makeText(ProfileActivity.this, ""+image, Toast.LENGTH_SHORT).show();
                 tname.setText(displayName);
                 tstatus.setText(status);
-                Picasso.get().load(image).into(mImage);
+                Picasso.get().load(image).placeholder(R.drawable.default_avatar).into(mImage);
 
 
                 //----------------------Friend request button state------------------
