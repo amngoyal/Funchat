@@ -7,9 +7,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +40,8 @@ public class ChatActivity extends AppCompatActivity {
     private CircleImageView circleImageView;
     private FirebaseAuth mAuth;
     private String mCurrentUser;
+    private ImageButton chatSendButton,chatAddButton;
+    private EditText chatEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,11 @@ public class ChatActivity extends AppCompatActivity {
         userName = getIntent().getStringExtra("userName");
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser().getUid();
+
+        chatSendButton  = findViewById(R.id.chat_send_button);
+        chatAddButton = findViewById(R.id.chat_Add_button);
+        chatEditText = findViewById(R.id.chat_edit_text);
+
 
         mRootRef = FirebaseDatabase.getInstance().getReference();
 
@@ -124,6 +134,24 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
+        chatSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendMessage();
+            }
+        });
+    }
+
+    private void sendMessage() {
+        String message = chatEditText.getText().toString();
+        if(TextUtils.isEmpty(message)){
+            String currentUserRef = "messages/"+mCurrentUser+"/"+mChatUser;
+            String chatUserRef = "message/"+mChatUser+"/"+mCurrentUser;
+
+            Map messageMap = new HashMap();
+            messageMap.put(chatUserRef+"/message",message);
+        }
     }
 
 }
