@@ -151,6 +151,7 @@ public class ChatActivity extends AppCompatActivity {
 
             Map messageMap = new HashMap();
             messageMap.put(chatUserRef+"/message",message);
+            messageMap.put(chatUserRef+"/send",false);
         }
     }
 
