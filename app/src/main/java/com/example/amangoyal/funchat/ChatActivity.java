@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +27,9 @@ import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,6 +48,9 @@ public class ChatActivity extends AppCompatActivity {
     private ImageButton chatSendButton, chatAddButton;
     private EditText chatEditText;
     private RecyclerView chatMessgaeList;
+    private LinearLayoutManager mLinearLayoutManager;
+    private List<Messages> messagesList = new ArrayList<>();
+    private MessagesAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +66,18 @@ public class ChatActivity extends AppCompatActivity {
         chatAddButton = findViewById(R.id.chat_Add_button);
         chatEditText = findViewById(R.id.chat_edit_text);
         chatMessgaeList = findViewById(R.id.chat_message_list);
-
-
         mRootRef = FirebaseDatabase.getInstance().getReference();
+
+
+        mLinearLayoutManager = new LinearLayoutManager(this);
+        chatMessgaeList.setHasFixedSize(true);
+        chatMessgaeList.setLayoutManager(mLinearLayoutManager);
+
+        mAdapter = new MessagesAdapter(messagesList);
+        chatMessgaeList.setAdapter(mAdapter);
+        loadMessages();
+
+
 
         chatToolbar = findViewById(R.id.chatToolbar);
         chatToolbar.setTitle("");
@@ -93,8 +109,6 @@ public class ChatActivity extends AppCompatActivity {
                 if (lastOnlineTime.equals("true")) {
                     lastSeenView.setText("Online");
                 } else {
-
-
                     long lastTime = Long.parseLong(lastOnlineTime);
                     String lastSeenTime = GetTimeAgo.getTimeAgo(lastTime, getApplicationContext());
 
@@ -136,12 +150,45 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
+
             }
         });
         chatSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage();
+            }
+        });
+    }
+
+    private void loadMessages() {
+        mRootRef.child("messages").child(mCurrentUser).child(mChatUser).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                Messages messages = dataSnapshot.getValue(Messages.class);
+                messagesList.add(messages);
+                mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }

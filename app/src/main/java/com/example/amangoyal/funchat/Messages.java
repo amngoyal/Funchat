@@ -4,9 +4,12 @@ public class Messages {
 
     private String message;
     private String type;
-    private String time;
-    private String seen;
+    private long time;
+    private Boolean seen;
 
+    public Messages(){
+
+    }
 
     public String getMessage() {
         return message;
@@ -24,24 +27,24 @@ public class Messages {
         this.type = type;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 
-    public String getSeen() {
+    public Boolean getSeen() {
         return seen;
     }
 
-    public void setSeen(String seen) {
+    public void setSeen(Boolean seen) {
         this.seen = seen;
     }
 
 
-    public Messages( String message, String type, String time, String seen) {
+    public Messages(String message, String type, long time, Boolean seen) {
         this.message = message;
         this.type = type;
         this.time = time;
