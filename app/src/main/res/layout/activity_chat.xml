@@ -3,14 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cccccc"
+    android:background="#L̥L̥cccccc"
     tools:context=".ChatActivity">
 
     <include
         android:id="@+id/chatToolbar"
         layout="@layout/app_bar_layout" />
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chat_message_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/chat_text_Send_layout"
+        android:layout_below="@+id/chatToolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="347dp">
+
+    </android.support.v7.widget.RecyclerView>
+
     <LinearLayout
+        android:id="@+id/chat_text_Send_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -34,12 +49,14 @@
             android:id="@+id/chat_edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_weight="8"
+            android:hint="Write a message"
             android:paddingLeft="10dp"
             android:paddingTop="12dp"
             android:paddingRight="10dp"
-            android:paddingBottom="12dp"
-            android:text="Write a message" />
+            android:paddingBottom="12dp" />
 
         <ImageButton
             android:id="@+id/chat_send_button"
