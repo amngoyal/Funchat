@@ -47,7 +47,7 @@ public class ChatActivity extends AppCompatActivity {
     private String mCurrentUser;
     private ImageButton chatSendButton, chatAddButton;
     private EditText chatEditText;
-    private RecyclerView chatMessgaeList;
+    private RecyclerView chatMessageList;
     private LinearLayoutManager mLinearLayoutManager;
     private List<Messages> messagesList = new ArrayList<>();
     private MessagesAdapter mAdapter;
@@ -65,18 +65,17 @@ public class ChatActivity extends AppCompatActivity {
         chatSendButton = findViewById(R.id.chat_send_button);
         chatAddButton = findViewById(R.id.chat_Add_button);
         chatEditText = findViewById(R.id.chat_edit_text);
-        chatMessgaeList = findViewById(R.id.chat_message_list);
+        chatMessageList = findViewById(R.id.chat_message_list);
         mRootRef = FirebaseDatabase.getInstance().getReference();
 
 
         mLinearLayoutManager = new LinearLayoutManager(this);
-        chatMessgaeList.setHasFixedSize(true);
-        chatMessgaeList.setLayoutManager(mLinearLayoutManager);
+        chatMessageList.setHasFixedSize(true);
+        chatMessageList.setLayoutManager(mLinearLayoutManager);
 
         mAdapter = new MessagesAdapter(messagesList);
-        chatMessgaeList.setAdapter(mAdapter);
+        chatMessageList.setAdapter(mAdapter);
         loadMessages();
-
 
 
         chatToolbar = findViewById(R.id.chatToolbar);
@@ -109,6 +108,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (lastOnlineTime.equals("true")) {
                     lastSeenView.setText("Online");
                 } else {
+
                     long lastTime = Long.parseLong(lastOnlineTime);
                     String lastSeenTime = GetTimeAgo.getTimeAgo(lastTime, getApplicationContext());
 
@@ -157,6 +157,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendMessage();
+                chatEditText.setText("");
             }
         });
     }
@@ -169,6 +170,7 @@ public class ChatActivity extends AppCompatActivity {
                 Messages messages = dataSnapshot.getValue(Messages.class);
                 messagesList.add(messages);
                 mAdapter.notifyDataSetChanged();
+                chatMessageList.scrollToPosition(messagesList.size()-1);
             }
 
             @Override
