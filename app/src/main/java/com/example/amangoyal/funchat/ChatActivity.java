@@ -3,6 +3,7 @@ package com.example.amangoyal.funchat;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
@@ -47,10 +49,13 @@ public class ChatActivity extends AppCompatActivity {
     private String mCurrentUser;
     private ImageButton chatSendButton, chatAddButton;
     private EditText chatEditText;
-    private RecyclerView chatMessageList;
+    private RecyclerView chatMessageListLayout;
     private LinearLayoutManager mLinearLayoutManager;
     private List<Messages> messagesList = new ArrayList<>();
     private MessagesAdapter mAdapter;
+    public static final int TOTAL_ITEMS_TO_LOAD = 10;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private int mCurrentPages = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +70,17 @@ public class ChatActivity extends AppCompatActivity {
         chatSendButton = findViewById(R.id.chat_send_button);
         chatAddButton = findViewById(R.id.chat_Add_button);
         chatEditText = findViewById(R.id.chat_edit_text);
-        chatMessageList = findViewById(R.id.chat_message_list);
+        chatMessageListLayout = findViewById(R.id.chat_message_list);
+        swipeRefreshLayout = findViewById(R.id.chat_message_swipe_layout);
         mRootRef = FirebaseDatabase.getInstance().getReference();
 
 
         mLinearLayoutManager = new LinearLayoutManager(this);
-        chatMessageList.setHasFixedSize(true);
-        chatMessageList.setLayoutManager(mLinearLayoutManager);
+        chatMessageListLayout.setHasFixedSize(true);
+        chatMessageListLayout.setLayoutManager(mLinearLayoutManager);
 
         mAdapter = new MessagesAdapter(messagesList);
-        chatMessageList.setAdapter(mAdapter);
+        chatMessageListLayout.setAdapter(mAdapter);
         loadMessages();
 
 
@@ -153,24 +159,40 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                mCurrentPages++;
+                loadMessages();
+
+            }
+        });
+
         chatSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage();
+                messagesList.clear();
                 chatEditText.setText("");
             }
         });
     }
 
     private void loadMessages() {
-        mRootRef.child("messages").child(mCurrentUser).child(mChatUser).addChildEventListener(new ChildEventListener() {
+
+        DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(mCurrentUser).child(mChatUser);
+        Query messageQuery = messageRef.limitToLast(mCurrentPages * TOTAL_ITEMS_TO_LOAD);
+        messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 Messages messages = dataSnapshot.getValue(Messages.class);
                 messagesList.add(messages);
                 mAdapter.notifyDataSetChanged();
-                chatMessageList.scrollToPosition(messagesList.size()-1);
+                chatMessageListLayout.scrollToPosition(messagesList.size() - 1);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
