@@ -166,6 +166,8 @@ public class ChatActivity extends AppCompatActivity {
 
                 mCurrentPages++;
                 loadMessages();
+                messagesList.clear();
+                chatMessageListLayout.scrollToPosition(0);
 
             }
         });
@@ -174,8 +176,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sendMessage();
-                messagesList.clear();
                 chatEditText.setText("");
+
             }
         });
     }
@@ -191,7 +193,7 @@ public class ChatActivity extends AppCompatActivity {
                 Messages messages = dataSnapshot.getValue(Messages.class);
                 messagesList.add(messages);
                 mAdapter.notifyDataSetChanged();
-                chatMessageListLayout.scrollToPosition(messagesList.size() - 1);
+                chatMessageListLayout.scrollToPosition(messagesList.size()-1);
                 swipeRefreshLayout.setRefreshing(false);
             }
 
