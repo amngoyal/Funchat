@@ -165,8 +165,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onRefresh() {
 
                 mCurrentPages++;
-                loadMessages();
                 messagesList.clear();
+                loadMoreMessages();
+
                 chatMessageListLayout.scrollToPosition(0);
 
             }
@@ -180,6 +181,43 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void loadMoreMessages() {
+
+        DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(mCurrentUser).child(mChatUser);
+        Query messageQuery = messageRef.orderByKey().endAt();
+
+        messageQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                messagesList.add(messages);
+                mAdapter.notifyDataSetChanged();
+                chatMessageListLayout.scrollToPosition(messagesList.size()-1);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        })
+
     }
 
     private void loadMessages() {
