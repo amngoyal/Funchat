@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -49,7 +50,7 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         holder.setTextName(user.getName());
         holder.setTextDate(user.getDate());
         holder.setImage(user.getThumb_image());
-        holder.setOnlineStatusImage(user.getOnlineStatus());
+        holder.setOnlineStatus(user.getOnlineStatus());
 
         final String user_id = user.getUid();
 
@@ -92,7 +93,8 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
         private LinearLayout root;
         TextView tname;
         TextView tdate;
-        CircleImageView imageView, onlineStatusImage;
+        CircleImageView imageView;
+        ImageView onlineStatusImage;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -101,16 +103,13 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             root = itemView.findViewById(R.id.list_root);
             tname = itemView.findViewById(R.id.list_title);
             tdate = itemView.findViewById(R.id.list_desc);
-            onlineStatusImage = itemView.findViewById(R.id.online_status);
+
 
             imageView = itemView.findViewById(R.id.single_user_image);
+            onlineStatusImage = itemView.findViewById(R.id.single_user_online_dot);
 
         }
 
-        public void setOnlineStatusImage(String status) {
-
-            Picasso.get().load(R.drawable.color_green).into(onlineStatusImage);
-        }
 
         public void setTextName(String name) {
             tname.setText(name);
@@ -122,6 +121,14 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
         public void setImage(String thumb_image) {
             Picasso.get().load(thumb_image).placeholder(R.drawable.default_avatar).into(imageView);
+
+        }
+
+        public void setOnlineStatus(String onlineStatus){
+
+            if(onlineStatus.equals("true")){
+                onlineStatusImage.setVisibility(View.VISIBLE);
+            }
 
         }
 

@@ -21,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
@@ -311,5 +312,20 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        mrootRef.child("users").child(currentUser.getUid()).child("online").setValue("true");
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mrootRef.child("users").child(currentUser.getUid()).child("online").setValue(ServerValue.TIMESTAMP);
+
     }
 }

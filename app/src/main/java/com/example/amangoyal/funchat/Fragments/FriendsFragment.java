@@ -47,7 +47,10 @@ public class FriendsFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getCurrentUser().getUid();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends");
+        mDatabaseReference.keepSynced(true);
         usersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("users");
+        usersDatabaseRef.keepSynced(true);
+
 
         mFriendlist.setHasFixedSize(true);
         mFriendlist.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -84,7 +87,7 @@ public class FriendsFragment extends Fragment {
                                     date,
                                     dataSnapshot.child("thumb_image").getValue().toString(),
                                     friendUserId,
-                                    dataSnapshot.child("name").getValue().toString()
+                                    dataSnapshot.child("online").getValue().toString()
 
                             );
 

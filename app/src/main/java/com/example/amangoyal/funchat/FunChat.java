@@ -30,8 +30,10 @@ public class FunChat extends Application {
         built.setIndicatorsEnabled(true);
         built.setLoggingEnabled(true);
         Picasso.setSingletonInstance(built);
-       /* if (mAuth.getCurrentUser() != null) {
-            mAuth = FirebaseAuth.getInstance();
+
+        mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
             mRef = FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid());
 
             mRef.addValueEventListener(new ValueEventListener() {
@@ -48,6 +50,6 @@ public class FunChat extends Application {
 
                 }
             });
-        }*/
+        }
     }
 }

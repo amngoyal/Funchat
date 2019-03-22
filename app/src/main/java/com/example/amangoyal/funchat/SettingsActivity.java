@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -41,7 +42,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import id.zelory.compressor.Compressor;
 
 public class SettingsActivity extends AppCompatActivity {
-    private DatabaseReference mUserDatabase;
+    private DatabaseReference mUserDatabase, mRootRef;
     private FirebaseUser mUser;
     private StorageReference mStorage;
 
@@ -85,6 +86,7 @@ public class SettingsActivity extends AppCompatActivity {
         mUser = FirebaseAuth.getInstance().getCurrentUser();
         String currentUid = mUser.getUid();
         // getting the database refrence from the user's database through current UID
+        mRootRef = FirebaseDatabase.getInstance().getReference();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("users").child(currentUid);
         mUserDatabase.keepSynced(true);
 
@@ -144,6 +146,7 @@ public class SettingsActivity extends AppCompatActivity {
                 galleryIntent.setType("image/*");
                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+
             }
         });
     }
@@ -162,6 +165,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                     .start(this);
         }
+        mProgressDialogue.dismiss();
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
@@ -262,10 +266,23 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 });
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception er;
+                Exception e;
 
-                er = result.getError();
+                e = result.getError();
             }
         }
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mRootRef.child("users").child(mUser.getUid()).child("online").setValue(true);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mRootRef.child("users").child(mUser.getUid()).child("online").setValue(ServerValue.TIMESTAMP);
+
     }
 }

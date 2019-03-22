@@ -166,7 +166,7 @@ public class ChatActivity extends AppCompatActivity {
 
                 mCurrentPages++;
                 messagesList.clear();
-                loadMoreMessages();
+                loadMessages();
 
                 chatMessageListLayout.scrollToPosition(0);
 
@@ -183,10 +183,10 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    private void loadMoreMessages() {
+  /*  private void loadMoreMessages() {
 
         DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(mCurrentUser).child(mChatUser);
-        Query messageQuery = messageRef.orderByKey().endAt();
+        Query messageQuery = messageRef.orderByKey();
 
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
@@ -216,9 +216,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        })
+        });
 
-    }
+    }*/
 
     private void loadMessages() {
 
