@@ -53,9 +53,11 @@ public class ChatActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private List<Messages> messagesList = new ArrayList<>();
     private MessagesAdapter mAdapter;
-    public static final int TOTAL_ITEMS_TO_LOAD = 10;
+    public static final int TOTAL_ITEMS_TO_LOAD = 9;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int mCurrentPages = 1;
+    private int itemPos = 0;
+    private String mLastKey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,10 +167,10 @@ public class ChatActivity extends AppCompatActivity {
             public void onRefresh() {
 
                 mCurrentPages++;
-                messagesList.clear();
-                loadMessages();
+                itemPos = 0;
+                loadMoreMessages();
+                // chatMessageListLayout.scrollToPosition(1);
 
-                chatMessageListLayout.scrollToPosition(0);
 
             }
         });
@@ -183,18 +185,22 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-  /*  private void loadMoreMessages() {
+    private void loadMoreMessages() {
 
         DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(mCurrentUser).child(mChatUser);
-        Query messageQuery = messageRef.orderByKey();
+        Query messageQuery = messageRef.orderByKey().endAt(mLastKey).limitToLast(10);
 
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                messagesList.add(messages);
+                Messages messages = dataSnapshot.getValue(Messages.class);
+                messagesList.add(itemPos++, messages);
+                if (itemPos == 1) {
+                    mLastKey = dataSnapshot.getKey();
+                }
                 mAdapter.notifyDataSetChanged();
-                chatMessageListLayout.scrollToPosition(messagesList.size()-1);
                 swipeRefreshLayout.setRefreshing(false);
+                mLinearLayoutManager.scrollToPositionWithOffset(10,0);
             }
 
             @Override
@@ -218,7 +224,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
-    }*/
+    }
 
     private void loadMessages() {
 
@@ -229,9 +235,13 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 Messages messages = dataSnapshot.getValue(Messages.class);
+                itemPos++;
+                if (itemPos == 1) {
+                    mLastKey = dataSnapshot.getKey();
+                }
                 messagesList.add(messages);
                 mAdapter.notifyDataSetChanged();
-                chatMessageListLayout.scrollToPosition(messagesList.size()-1);
+                chatMessageListLayout.scrollToPosition(messagesList.size() - 1);
                 swipeRefreshLayout.setRefreshing(false);
             }
 

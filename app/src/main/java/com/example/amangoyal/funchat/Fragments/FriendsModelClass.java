@@ -21,7 +21,7 @@ public class FriendsModelClass {
         this.uid = uid;
         this.name = name;
         this.date = status;
-        this.image = image;
+        this.thumb_image = thumb_image;
         this.onlineStatus = onlineStatus;
     }
 

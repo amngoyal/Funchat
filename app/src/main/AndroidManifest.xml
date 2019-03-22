@@ -31,7 +31,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ProfileActivity">
+        <activity android:name=".ProfileActivity"
+            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="com.example.amangoyal.funchat.TARGET_NOTIFICATION" />
 
