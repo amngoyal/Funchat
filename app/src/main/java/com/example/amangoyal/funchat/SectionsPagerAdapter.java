@@ -4,38 +4,34 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.example.amangoyal.funchat.Fragments.ChatsFragment;
 import com.example.amangoyal.funchat.Fragments.FriendsFragment;
 import com.example.amangoyal.funchat.Fragments.RequestsFragment;
 
+import java.util.List;
+
 class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-    public SectionsPagerAdapter(FragmentManager fm) {
+    private static final String TAG = "SectionsPagerAdapter";
+
+    private List<Fragment> fragmentList;
+
+    public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
         super(fm);
+        this.fragmentList = fragmentList;
     }
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                RequestsFragment requestsFragment = new RequestsFragment();
-                return requestsFragment;
-            case 1:
-                ChatsFragment chatsFragment = new ChatsFragment();
-                return chatsFragment;
-            case 2:
-                FriendsFragment friendsFragment = new FriendsFragment();
-                return friendsFragment;
-            default:
-                return null;
-        }
-
+        Log.d(TAG, String.valueOf(position));
+        return fragmentList.get(position);
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return fragmentList.size();
     }
 
     @Nullable

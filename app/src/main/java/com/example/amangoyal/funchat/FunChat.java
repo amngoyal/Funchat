@@ -40,9 +40,7 @@ public class FunChat extends Application {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                    if (dataSnapshot != null) {
                         mRef.child("online").onDisconnect().setValue(ServerValue.TIMESTAMP);
-                    }
                 }
 
                 @Override

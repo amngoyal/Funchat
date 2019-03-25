@@ -1,6 +1,8 @@
 package com.example.amangoyal.funchat;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +20,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -27,6 +32,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -39,6 +47,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
 
+    private static final int GALLERY_PICK = 1;
     private String mChatUser;
     private Toolbar chatToolbar;
     private DatabaseReference mRootRef;
@@ -53,11 +62,13 @@ public class ChatActivity extends AppCompatActivity {
     private LinearLayoutManager mLinearLayoutManager;
     private List<Messages> messagesList = new ArrayList<>();
     private MessagesAdapter mAdapter;
-    public static final int TOTAL_ITEMS_TO_LOAD = 9;
+    public static final int TOTAL_ITEMS_TO_LOAD = 10;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int mCurrentPages = 1;
     private int itemPos = 0;
     private String mLastKey = "";
+    private String mPrevKey = "";
+    private StorageReference mImageStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +86,7 @@ public class ChatActivity extends AppCompatActivity {
         chatMessageListLayout = findViewById(R.id.chat_message_list);
         swipeRefreshLayout = findViewById(R.id.chat_message_swipe_layout);
         mRootRef = FirebaseDatabase.getInstance().getReference();
+        mImageStorage = FirebaseStorage.getInstance().getReference();
 
 
         mLinearLayoutManager = new LinearLayoutManager(this);
@@ -95,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
         actionBar.setDisplayShowCustomEnabled(true);
 
 
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View action_bar_view = inflater.inflate(R.layout.custom_action_bar, null);
         actionBar.setCustomView(action_bar_view);
 
@@ -183,6 +195,16 @@ public class ChatActivity extends AppCompatActivity {
 
             }
         });
+
+        chatAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent();
+                galleryIntent.setType("image/*");
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+            }
+        });
     }
 
     private void loadMoreMessages() {
@@ -194,13 +216,22 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Messages messages = dataSnapshot.getValue(Messages.class);
-                messagesList.add(itemPos++, messages);
-                if (itemPos == 1) {
-                    mLastKey = dataSnapshot.getKey();
+                String messageKey = dataSnapshot.getKey();
+
+                if (!mPrevKey.equals(messageKey)) {
+                    messagesList.add(itemPos++, messages);
+                } else {
+                    mPrevKey = mLastKey;
                 }
+
+                if (itemPos == 1) {
+                    mLastKey = messageKey;
+                }
+
+                Log.d("Total keys:", "last key:" + mLastKey + " |prev key:" + mPrevKey + " |message key:" + messageKey);
                 mAdapter.notifyDataSetChanged();
                 swipeRefreshLayout.setRefreshing(false);
-                mLinearLayoutManager.scrollToPositionWithOffset(10,0);
+                mLinearLayoutManager.scrollToPositionWithOffset(10, 0);
             }
 
             @Override
@@ -230,15 +261,20 @@ public class ChatActivity extends AppCompatActivity {
 
         DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference().child("messages").child(mCurrentUser).child(mChatUser);
         Query messageQuery = messageRef.limitToLast(mCurrentPages * TOTAL_ITEMS_TO_LOAD);
+
         messageQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 Messages messages = dataSnapshot.getValue(Messages.class);
                 itemPos++;
+                String messageKey = dataSnapshot.getKey();
                 if (itemPos == 1) {
-                    mLastKey = dataSnapshot.getKey();
+                    mLastKey = messageKey;
+                    mPrevKey = messageKey;
                 }
+
+                Log.d("last key", mLastKey);
                 messagesList.add(messages);
                 mAdapter.notifyDataSetChanged();
                 chatMessageListLayout.scrollToPosition(messagesList.size() - 1);
@@ -282,6 +318,7 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("seen", false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("from",mCurrentUser);
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(currentUserRef + "/" + pushId, messageMap);
@@ -299,5 +336,58 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
+
+            Uri imageUri = data.getData();
+
+            final String currentUserRef = "messages/" + mCurrentUser + "/" + mChatUser;
+            final String chatUserRef = "messages/" + mChatUser + "/" + mCurrentUser;
+
+            DatabaseReference userPushId = FirebaseDatabase.getInstance().getReference().child("message")
+                    .child(mCurrentUser).child(mChatUser).push();
+            final String pushId = userPushId.getKey();
+
+            final StorageReference imageRef = mImageStorage.child("message_images").child(pushId + ".jpg");
+            imageRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if(task.isSuccessful()){
+
+                        imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                               String downloadURL = uri.toString();
+
+                                Map messageMap = new HashMap();
+                                messageMap.put("message", downloadURL);
+                                messageMap.put("seen", false);
+                                messageMap.put("type", "image");
+                                messageMap.put("time", ServerValue.TIMESTAMP);
+                                messageMap.put("from",mCurrentUser);
+
+                                Map messageUserMap = new HashMap();
+                                messageUserMap.put(currentUserRef + "/" + pushId, messageMap);
+                                messageUserMap.put(chatUserRef + "/" + pushId, messageMap);
+
+                                mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                                        if (databaseError != null) {
+                                            Log.d("messageUserMap", databaseError.getMessage());
+                                        }
+                                    }
+                                });
+
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    }
 }
 

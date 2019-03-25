@@ -2,6 +2,7 @@ package com.example.amangoyal.funchat.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,6 +26,8 @@ import java.util.List;
 public class FriendsFragment extends Fragment {
 
 
+    private static final String TAG = "FriendsFragment";
+
     private RecyclerView mFriendlist;
     private DatabaseReference mDatabaseReference;
     private FirebaseAuth mAuth;
@@ -38,12 +41,11 @@ public class FriendsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
 
-        mMainView = inflater.inflate(R.layout.fragment_friends, container, false);
-        mFriendlist = mMainView.findViewById(R.id.friends_recycler_view);
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         mAuth = FirebaseAuth.getInstance();
         mCurrentUserId = mAuth.getCurrentUser().getUid();
         mDatabaseReference = FirebaseDatabase.getInstance().getReference().child("friends");
@@ -51,17 +53,29 @@ public class FriendsFragment extends Fragment {
         usersDatabaseRef = FirebaseDatabase.getInstance().getReference().child("users");
         usersDatabaseRef.keepSynced(true);
 
+        fetch();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        mMainView = inflater.inflate(R.layout.fragment_friends, container, false);
+
+        Log.d(TAG,"On createview called ");
+        mFriendlist = mMainView.findViewById(R.id.friends_recycler_view);
 
         mFriendlist.setHasFixedSize(true);
         mFriendlist.setLayoutManager(new LinearLayoutManager(getContext()));
-        fetch();
+        friendListAdapter = new FriendListAdapter(getContext(), arrayList);
+        mFriendlist.setAdapter(friendListAdapter);
 
         return mMainView;
     }
 
     public void fetch() {
 
-        mDatabaseReference.child(mCurrentUserId).addValueEventListener(new ValueEventListener() {
+        mDatabaseReference.child(mCurrentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (final DataSnapshot data : dataSnapshot.getChildren()) {
@@ -75,7 +89,7 @@ public class FriendsFragment extends Fragment {
                     final String date = data.getValue().toString();
 
 
-                    usersDatabaseRef.child(friendUserId).addValueEventListener(new ValueEventListener() {
+                    usersDatabaseRef.child(friendUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -108,8 +122,6 @@ public class FriendsFragment extends Fragment {
             }
         });
 
-        friendListAdapter = new FriendListAdapter(getContext(), arrayList);
-        mFriendlist.setAdapter(friendListAdapter);
 
     }
 

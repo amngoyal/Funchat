@@ -52,7 +52,10 @@ public class AllUserActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
+
+
         fetch();
+
 
     }
 
@@ -61,7 +64,9 @@ public class AllUserActivity extends AppCompatActivity {
 
 
     private void fetch() {
-        FirebaseDatabase.getInstance().getReference().child("users").addValueEventListener(new ValueEventListener() {
+
+        Log.d(TAG,"Fetch function called");
+        FirebaseDatabase.getInstance().getReference().child("users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -73,6 +78,9 @@ public class AllUserActivity extends AppCompatActivity {
                             , data.getKey()
                     );
                     usersList.add(usersModelClass);
+                    Log.d(TAG,"FetchCalled "+ usersList.size());
+
+
                 }
                 allUsersListAdapter = new AllUsersListAdapter(AllUserActivity.this, usersList);
                 mRecyclerView.setAdapter(allUsersListAdapter);

@@ -35,6 +35,11 @@
             android:paddingTop="10dp"
             android:textColor="#ffffff"
             android:textSize="16sp" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:id="@+id/message_image_layout"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"/>
 
         <TextView
             android:id="@+id/message_time_layout"

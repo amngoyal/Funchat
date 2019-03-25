@@ -6,6 +6,7 @@ public class Messages {
     private String type;
     private long time;
     private Boolean seen;
+    private  String from;
 
     public Messages(){
 
@@ -52,4 +53,11 @@ public class Messages {
     }
 
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
 }

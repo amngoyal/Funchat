@@ -1,17 +1,16 @@
 package com.example.amangoyal.funchat;
 
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -35,7 +34,18 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i) {
 
         Messages message = messagesList.get(i);
-        messageViewHolder.messageLayout.setText(message.getMessage());
+
+        String messageType = message.getType();
+        String fromUser = message.getFrom();
+
+        if(messageType.equals("text")){
+            messageViewHolder.messageLayout.setText(message.getMessage());
+            messageViewHolder.messageImageLayout.setVisibility(View.INVISIBLE);
+
+        }else{
+            messageViewHolder.messageLayout.setVisibility(View.INVISIBLE);
+            Picasso.get().load(message.getMessage()).into(messageViewHolder.messageImageLayout);
+        }
     }
 
     @Override
@@ -47,10 +57,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
         private TextView messageLayout;
         private CircleImageView profile;
+        public ImageView messageImageLayout;
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             messageLayout = itemView.findViewById(R.id.message_text_layout);
             profile = itemView.findViewById(R.id.message_profile_layout);
+            messageImageLayout = itemView.findViewById(R.id.message_image_layout);
 
         }
     }
