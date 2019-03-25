@@ -16,9 +16,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.FormatFlagsConversionMismatchException;
 import java.util.List;
 
 
@@ -59,12 +61,30 @@ public class ChatsFragment extends Fragment {
 
     private void fetch() {
 
-        mrootRef.child("messages").addListenerForSingleValueEvent(new ValueEventListener() {
+        mrootRef.child("messages").child(currentUser).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChildren()){
+                if (dataSnapshot.hasChildren()) {
+
+                    final Query messageQuery = mrootRef.child("messages").orderByKey().limitToLast(1);
+                    messageQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for (DataSnapshot d : dataSnapshot.getChildren()) {
+                                ChatModelClass chatModelClass = new ChatModelClass(d.child("seen").getValue().toString(),
+                                        d.child("timestamp").getValue().toString());
+
+                                chatList.add(chatModelClass);
+                            }
 
 
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
