@@ -148,20 +148,32 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild(mChatUser)) {
-                    Map chatAddMap = new HashMap();
-                    chatAddMap.put("seen", false);
-                    chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
-
-                    Map chatUserMap = new HashMap();
-                    chatUserMap.put("chat/" + mCurrentUser + "/" + mChatUser, chatAddMap);
-                    chatUserMap.put("chat/" + mChatUser + "/" + mCurrentUser, chatAddMap);
-
-                    mRootRef.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
+                    mRootRef.child("users").child(mChatUser).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Map chatAddMap = new HashMap();
+                            chatAddMap.put("seen", "false");
+                            chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
+                            chatAddMap.put("name",dataSnapshot.child("name").getValue());
+                            chatAddMap.put("thumb_image",dataSnapshot.child("thumb_image").getValue());
 
-                            if (databaseError != null)
-                                Log.d("chatError", databaseError.getMessage());
+                            Map chatUserMap = new HashMap();
+                            chatUserMap.put("chat/" + mCurrentUser + "/" + mChatUser, chatAddMap);
+                            chatUserMap.put("chat/" + mChatUser + "/" + mCurrentUser, chatAddMap);
+
+                            mRootRef.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
+                                @Override
+                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+
+                                    if (databaseError != null)
+                                        Log.d("chatError", databaseError.getMessage());
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
                         }
                     });
                 }
@@ -318,7 +330,7 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("seen", false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
-            messageMap.put("from",mCurrentUser);
+            messageMap.put("from", mCurrentUser);
 
             Map messageUserMap = new HashMap();
             messageUserMap.put(currentUserRef + "/" + pushId, messageMap);
@@ -355,19 +367,19 @@ public class ChatActivity extends AppCompatActivity {
             imageRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    if(task.isSuccessful()){
+                    if (task.isSuccessful()) {
 
                         imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                               String downloadURL = uri.toString();
+                                String downloadURL = uri.toString();
 
                                 Map messageMap = new HashMap();
                                 messageMap.put("message", downloadURL);
                                 messageMap.put("seen", false);
                                 messageMap.put("type", "image");
                                 messageMap.put("time", ServerValue.TIMESTAMP);
-                                messageMap.put("from",mCurrentUser);
+                                messageMap.put("from", mCurrentUser);
 
                                 Map messageUserMap = new HashMap();
                                 messageUserMap.put(currentUserRef + "/" + pushId, messageMap);
