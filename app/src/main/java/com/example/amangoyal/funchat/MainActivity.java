@@ -51,8 +51,11 @@ public class MainActivity extends AppCompatActivity {
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), mainFragmentList);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout = findViewById(R.id.main_tabs);
+
+
         mTabLayout.setupWithViewPager(mViewPager);
 
+        mViewPager.setCurrentItem(1);
     }
 
 

@@ -3,7 +3,9 @@ package com.example.amangoyal.funchat.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
         chatViewHolder.setName(chatModelClass.getName());
         chatViewHolder.setProfile(chatModelClass.getThumbImage());
         chatViewHolder.setLastMessage(chatModelClass.getLastMessage());
+        chatViewHolder.setTime(chatModelClass.getTimestamp());
 
         chatViewHolder.root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,9 +63,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
     }
 
     public class ChatViewHolder extends RecyclerView.ViewHolder {
-        TextView tname,tLastMessage;
+        TextView tname,tLastMessage,tTime;
         CircleImageView tprofileImage;
-        LinearLayout root;
+        ConstraintLayout root;
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -70,6 +73,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
              tname =itemView.findViewById(R.id.list_title);
              root = itemView.findViewById(R.id.list_root);
              tLastMessage = itemView.findViewById(R.id.list_desc);
+             tTime = itemView.findViewById(R.id.single_chat_list_time_layout);
+
 
 
         }
@@ -85,6 +90,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
 
         public void setLastMessage(String lastMessage){
             tLastMessage.setText(lastMessage);
+        }
+
+        public  void setTime(String timestamp){
+            long timeStamp = Long.parseLong(timestamp);
+            String time = DateUtils.formatDateTime(context, timeStamp, DateUtils.FORMAT_SHOW_TIME);
+            tTime.setText(time);
+
+
         }
 
     }

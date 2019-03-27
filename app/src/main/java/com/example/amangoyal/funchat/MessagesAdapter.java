@@ -1,7 +1,9 @@
 package com.example.amangoyal.funchat;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +19,11 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MessageViewHolder> {
 
     private List<Messages> messagesList;
+    Context context;
 
-    public MessagesAdapter(List<Messages> messagesList) {
+    public MessagesAdapter(Context context,List<Messages> messagesList) {
         this.messagesList = messagesList;
+        this.context = context;
 
     }
 
@@ -37,16 +41,20 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
         String messageType = message.getType();
         String fromUser = message.getFrom();
+        String time = DateUtils.formatDateTime(context, message.getTime(), DateUtils.FORMAT_SHOW_TIME);
+
 
         if(messageType.equals("text")){
             messageViewHolder.messageLayout.setText(message.getMessage());
             messageViewHolder.messageImageLayout.setVisibility(View.INVISIBLE);
+            messageViewHolder.messageTimeLayout.setText(time);
 
         }else{
             messageViewHolder.messageLayout.setVisibility(View.INVISIBLE);
             Picasso.get().load(message.getMessage()).into(messageViewHolder.messageImageLayout);
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -55,7 +63,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
     public class MessageViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView messageLayout;
+        private TextView messageLayout,messageTimeLayout;
         private CircleImageView profile;
         public ImageView messageImageLayout;
         public MessageViewHolder(@NonNull View itemView) {
@@ -63,6 +71,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             messageLayout = itemView.findViewById(R.id.message_text_layout);
             profile = itemView.findViewById(R.id.message_profile_layout);
             messageImageLayout = itemView.findViewById(R.id.message_image_layout);
+            messageTimeLayout = itemView.findViewById(R.id.message_time_layout);
 
         }
     }

@@ -147,7 +147,7 @@ public class ChatsFragment extends Fragment {
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                         String lastMessage = dataSnapshot.child("message").getValue().toString();
-                        Log.d(TAG, "onChildAdded: "+lastMessage);
+                        //Log.d(TAG, "onChildAdded: "+lastMessage);
                         ChatModelClass chatModelClass = new ChatModelClass(
                                 seen,
                                 timestamp,
@@ -161,6 +161,7 @@ public class ChatsFragment extends Fragment {
                         chatList.add(chatModelClass);
                         adapter.notifyDataSetChanged();
                         adapter.notifyItemChanged(1);
+                        Log.d(TAG, "onChildAdded: "+chatList.size());
 
 
                     }
