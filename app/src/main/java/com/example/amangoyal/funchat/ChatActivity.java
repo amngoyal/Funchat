@@ -46,7 +46,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class ChatActivity extends AppCompatActivity {
-
+    private static final String TAG = "ChatActivity";
     private static final int GALLERY_PICK = 1;
     private String mChatUser;
     private Toolbar chatToolbar;
@@ -77,6 +77,7 @@ public class ChatActivity extends AppCompatActivity {
 
         mChatUser = getIntent().getStringExtra("user_id");
         userName = getIntent().getStringExtra("userName");
+
         mAuth = FirebaseAuth.getInstance();
         mCurrentUser = mAuth.getCurrentUser().getUid();
 
@@ -154,8 +155,9 @@ public class ChatActivity extends AppCompatActivity {
                             Map chatAddMap = new HashMap();
                             chatAddMap.put("seen", "false");
                             chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
-                            chatAddMap.put("name",dataSnapshot.child("name").getValue());
-                            chatAddMap.put("thumb_image",dataSnapshot.child("thumb_image").getValue());
+                            chatAddMap.put("name", dataSnapshot.child("name").getValue());
+                            chatAddMap.put("thumb_image", dataSnapshot.child("thumb_image").getValue());
+                            chatAddMap.put("uid", dataSnapshot.getKey());
 
                             Map chatUserMap = new HashMap();
                             chatUserMap.put("chat/" + mCurrentUser + "/" + mChatUser, chatAddMap);
@@ -325,11 +327,24 @@ public class ChatActivity extends AppCompatActivity {
                     .child(mCurrentUser).child(mChatUser).push();
             String pushId = userPushId.getKey();
 
+            Map timestamp = ServerValue.TIMESTAMP;
+            Map chatTimeStamp = new HashMap();
+            chatTimeStamp.put("chat/" + mCurrentUser + "/" + mChatUser + "/timestamp", timestamp);
+            chatTimeStamp.put("chat/" + mChatUser + "/" + mCurrentUser + "/timestamp", timestamp);
+            mRootRef.updateChildren(chatTimeStamp, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+                    if (databaseError != null) {
+                        Log.d("messageUserMap", databaseError.getMessage());
+                    }
+                }
+            });
+
             Map messageMap = new HashMap();
             messageMap.put("message", message);
             messageMap.put("seen", false);
             messageMap.put("type", "text");
-            messageMap.put("time", ServerValue.TIMESTAMP);
+            messageMap.put("time", timestamp);
             messageMap.put("from", mCurrentUser);
 
             Map messageUserMap = new HashMap();

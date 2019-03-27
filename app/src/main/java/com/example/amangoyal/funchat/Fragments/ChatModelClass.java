@@ -6,12 +6,17 @@ public class ChatModelClass {
     private String timestamp;
     private String name;
     private String thumbImage;
+    private String uid;
+    private String lastMessage;
 
-    public ChatModelClass(String seen, String timestamp,String name,String thumbImage ) {
+    public ChatModelClass(String seen, String timestamp, String name, String thumbImage, String uid, String lastMessage) {
         this.seen = seen;
         this.timestamp = timestamp;
         this.name = name;
         this.thumbImage = thumbImage;
+        this.uid = uid;
+        this.lastMessage = lastMessage;
+
     }
 
     public String getSeen() {
@@ -44,5 +49,21 @@ public class ChatModelClass {
 
     public void setThumbImage(String thumbImage) {
         this.thumbImage = thumbImage;
+    }
+
+    public String getLastMessage() {
+        return lastMessage;
+    }
+
+    public void setLastMessage(String lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

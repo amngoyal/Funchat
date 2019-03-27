@@ -12,12 +12,9 @@ import android.widget.TextView;
 
 import com.example.amangoyal.funchat.ChatActivity;
 import com.example.amangoyal.funchat.R;
-import com.example.amangoyal.funchat.loginAndRegisterActivity.StartActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.zip.Inflater;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -41,14 +38,17 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder chatViewHolder, int i) {
-        ChatModelClass chatModelClass = chatList.get(i);
+        final ChatModelClass chatModelClass = chatList.get(i);
         chatViewHolder.setName(chatModelClass.getName());
         chatViewHolder.setProfile(chatModelClass.getThumbImage());
+        chatViewHolder.setLastMessage(chatModelClass.getLastMessage());
 
         chatViewHolder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("userName",chatModelClass.getName());
+                intent.putExtra("user_id",chatModelClass.getUid());
                context.startActivity(intent);
             }
         });
@@ -60,7 +60,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
     }
 
     public class ChatViewHolder extends RecyclerView.ViewHolder {
-        TextView tname;
+        TextView tname,tLastMessage;
         CircleImageView tprofileImage;
         LinearLayout root;
         public ChatViewHolder(@NonNull View itemView) {
@@ -68,6 +68,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
 
              tprofileImage = itemView.findViewById(R.id.single_user_image);
              tname =itemView.findViewById(R.id.list_title);
+             root = itemView.findViewById(R.id.list_root);
+             tLastMessage = itemView.findViewById(R.id.list_desc);
+
 
         }
 
@@ -78,6 +81,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
         public void setProfile(String profile){
 
             Picasso.get().load(profile).placeholder(R.drawable.default_avatar).into(tprofileImage);
+        }
+
+        public void setLastMessage(String lastMessage){
+            tLastMessage.setText(lastMessage);
         }
 
     }
