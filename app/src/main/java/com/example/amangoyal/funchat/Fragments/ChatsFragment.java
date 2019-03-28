@@ -124,78 +124,25 @@ public class ChatsFragment extends Fragment {
             }
         });*/
 
-
         Query chatQuery = mrootRef.child("chat").child(currentUser).orderByChild("timestamp").limitToLast(20);
 
         chatQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                Log.d(TAG, "list user name and id: " + dataSnapshot.child("uid").getValue().toString() + " " + dataSnapshot.child("name").getValue().toString());
-
-                final String seen = dataSnapshot.child("seen").getValue().toString();
-                final String timestamp = dataSnapshot.child("timestamp").getValue().toString();
-                final String name = dataSnapshot.child("name").getValue().toString();
-                final String thumbImage = dataSnapshot.child("thumb_image").getValue().toString();
-                final String uid = dataSnapshot.getKey();
-
-
-                Query lastMessageQuery = mrootRef.child("messages").child(currentUser)
-                        .child(uid).limitToLast(1);
-                lastMessageQuery.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                        String lastMessage = dataSnapshot.child("message").getValue().toString();
-                        //Log.d(TAG, "onChildAdded: "+lastMessage);
-                        ChatModelClass chatModelClass = new ChatModelClass(
-                                seen,
-                                timestamp,
-                                name,
-                                thumbImage,
-                                uid,
-                                lastMessage
-
-                        );
-
-                        chatList.add(chatModelClass);
-                        adapter.notifyDataSetChanged();
-                        adapter.notifyItemChanged(1);
-                        Log.d(TAG, "onChildAdded: "+chatList.size());
-
-
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-                // Log.d(TAG, "onChildAdded: "+chatList.size());
-
+                Log.d(TAG, "onChildAdded: "+dataSnapshot);
+                ChatModelClass chatModelClass = dataSnapshot.getValue(ChatModelClass.class);
+                chatList.add(chatModelClass);
+               adapter.notifyDataSetChanged();
+                adapter.notifyItemChanged(1);
 
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
+                Log.d(TAG, "onChildChanged: ");
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -213,6 +160,7 @@ public class ChatsFragment extends Fragment {
 
             }
         });
+
 
     }
 

@@ -94,11 +94,11 @@ public class ChatActivity extends AppCompatActivity {
         chatMessageListLayout.setHasFixedSize(true);
         chatMessageListLayout.setLayoutManager(mLinearLayoutManager);
 
-        mAdapter = new MessagesAdapter(getApplicationContext(),messagesList);
+        mAdapter = new MessagesAdapter(getApplicationContext(), messagesList);
         chatMessageListLayout.setAdapter(mAdapter);
         loadMessages();
 
-
+        /*-------------------------------------- Set Custom toolbar for chat activity--------------------------------------- */
         chatToolbar = findViewById(R.id.chatToolbar);
         chatToolbar.setTitle("");
         setSupportActionBar(chatToolbar);
@@ -145,6 +145,8 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
+       /*---------------------------------------------------- Add chat node with useful data in chat node----------------------------------------*/
         mRootRef.child("chat").child(mCurrentUser).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -158,6 +160,7 @@ public class ChatActivity extends AppCompatActivity {
                             chatAddMap.put("name", dataSnapshot.child("name").getValue());
                             chatAddMap.put("thumb_image", dataSnapshot.child("thumb_image").getValue());
                             chatAddMap.put("uid", dataSnapshot.getKey());
+                            chatAddMap.put("last_message","null");
 
                             Map chatUserMap = new HashMap();
                             chatUserMap.put("chat/" + mCurrentUser + "/" + mChatUser, chatAddMap);
@@ -188,6 +191,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        /*--------------------------------------------------- Add messages on refreshing the chat list-----------------------------*/
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -195,12 +199,14 @@ public class ChatActivity extends AppCompatActivity {
                 mCurrentPages++;
                 itemPos = 0;
                 loadMoreMessages();
+                swipeRefreshLayout.setRefreshing(false);
                 // chatMessageListLayout.scrollToPosition(1);
 
 
             }
         });
 
+        /*------------------------------------------------------Send message to the chat user----------------------------------------- */
         chatSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -210,6 +216,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        /*------------------------------------------send images to the chat users--------------------------------------------------*/
         chatAddButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -331,6 +338,8 @@ public class ChatActivity extends AppCompatActivity {
             Map chatTimeStamp = new HashMap();
             chatTimeStamp.put("chat/" + mCurrentUser + "/" + mChatUser + "/timestamp", timestamp);
             chatTimeStamp.put("chat/" + mChatUser + "/" + mCurrentUser + "/timestamp", timestamp);
+            chatTimeStamp.put("chat/" + mCurrentUser + "/" + mChatUser + "/last_message", message);
+            chatTimeStamp.put("chat/" + mChatUser + "/" + mCurrentUser + "/last_message", message);
             mRootRef.updateChildren(chatTimeStamp, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {

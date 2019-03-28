@@ -3,19 +3,23 @@ package com.example.amangoyal.funchat.Fragments;
 public class ChatModelClass {
 
     private String seen;
-    private String timestamp;
+    private long timestamp;
     private String name;
-    private String thumbImage;
+    private String thumb_image;
     private String uid;
-    private String lastMessage;
+    private String last_message;
 
-    public ChatModelClass(String seen, String timestamp, String name, String thumbImage, String uid, String lastMessage) {
+    public ChatModelClass(){
+
+    }
+
+    public ChatModelClass(String seen, long timestamp, String name, String thumbImage, String uid, String lastMessage) {
         this.seen = seen;
         this.timestamp = timestamp;
         this.name = name;
-        this.thumbImage = thumbImage;
+        this.thumb_image = thumbImage;
         this.uid = uid;
-        this.lastMessage = lastMessage;
+        this.last_message = lastMessage;
 
     }
 
@@ -27,11 +31,11 @@ public class ChatModelClass {
         this.seen = seen;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -43,20 +47,20 @@ public class ChatModelClass {
         this.name = name;
     }
 
-    public String getThumbImage() {
-        return thumbImage;
+    public String getThumb_image() {
+        return thumb_image;
     }
 
-    public void setThumbImage(String thumbImage) {
-        this.thumbImage = thumbImage;
+    public void setThumb_image(String thumb_image) {
+        this.thumb_image = thumb_image;
     }
 
-    public String getLastMessage() {
-        return lastMessage;
+    public String getLast_message() {
+        return last_message;
     }
 
-    public void setLastMessage(String lastMessage) {
-        this.lastMessage = lastMessage;
+    public void setLast_message(String last_message) {
+        this.last_message = last_message;
     }
 
     public String getUid() {

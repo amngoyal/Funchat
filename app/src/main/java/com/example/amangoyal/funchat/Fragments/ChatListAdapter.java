@@ -9,7 +9,6 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.amangoyal.funchat.ChatActivity;
@@ -42,9 +41,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
     public void onBindViewHolder(@NonNull ChatViewHolder chatViewHolder, int i) {
         final ChatModelClass chatModelClass = chatList.get(i);
         chatViewHolder.setName(chatModelClass.getName());
-        chatViewHolder.setProfile(chatModelClass.getThumbImage());
-        chatViewHolder.setLastMessage(chatModelClass.getLastMessage());
-        chatViewHolder.setTime(chatModelClass.getTimestamp());
+        chatViewHolder.setProfile(chatModelClass.getThumb_image());
+        chatViewHolder.setLastMessage(chatModelClass.getLast_message());
+        chatViewHolder.setTime(String.valueOf(chatModelClass.getTimestamp()));
 
         chatViewHolder.root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,17 +62,18 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
     }
 
     public class ChatViewHolder extends RecyclerView.ViewHolder {
+
         TextView tname,tLastMessage,tTime;
         CircleImageView tprofileImage;
         ConstraintLayout root;
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
 
-             tprofileImage = itemView.findViewById(R.id.single_user_image);
-             tname =itemView.findViewById(R.id.list_title);
-             root = itemView.findViewById(R.id.list_root);
-             tLastMessage = itemView.findViewById(R.id.list_desc);
-             tTime = itemView.findViewById(R.id.single_chat_list_time_layout);
+            tprofileImage = itemView.findViewById(R.id.single_user_image);
+            tname =itemView.findViewById(R.id.list_title);
+            root = itemView.findViewById(R.id.list_root);
+            tLastMessage = itemView.findViewById(R.id.list_desc);
+            tTime = itemView.findViewById(R.id.single_chat_list_time_layout);
 
 
 
@@ -101,7 +101,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatVi
         }
 
     }
-
 
 }
 
