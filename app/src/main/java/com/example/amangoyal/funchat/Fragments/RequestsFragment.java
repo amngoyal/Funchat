@@ -76,33 +76,36 @@ public class RequestsFragment extends Fragment {
                 for (final DataSnapshot data : dataSnapshot.getChildren()) {
 
                     final String friendUserId = data.getKey();
+                    if (dataSnapshot.child(friendUserId).child("request_type").getValue().toString().equals("received")) {
+
+                        long timestamp = Long.parseLong(data.child("timestamp").getValue().toString());
+                        final String date = DateUtils.formatDateTime(getContext(), timestamp, DateUtils.FORMAT_SHOW_DATE);
 
 
-                    long timestamp = Long.parseLong(data.child("timestamp").getValue().toString());
-                    final String date = DateUtils.formatDateTime(getContext(), timestamp, DateUtils.FORMAT_SHOW_DATE);
+                        mrootRef.child("users").child(friendUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
-                    mrootRef.child("users").child(friendUserId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                FriendRequestModelClass friend = new FriendRequestModelClass(
+                                        dataSnapshot.child("name").getValue().toString(),
+                                        dataSnapshot.child("image").getValue().toString(),
+                                        date,
+                                        dataSnapshot.child("thumb_image").getValue().toString(),
+                                        friendUserId,
+                                        currentUser);
 
-                            FriendRequestModelClass friend = new FriendRequestModelClass(
-                                    dataSnapshot.child("name").getValue().toString(),
-                                    dataSnapshot.child("image").getValue().toString(),
-                                    date,
-                                    dataSnapshot.child("thumb_image").getValue().toString(),
-                                    friendUserId,
-                                    currentUser);
+                                Log.d("alldata", dataSnapshot.child("online").getValue().toString());
+                                requestList.add(friend);
+                                adapter.notifyDataSetChanged();
+                            }
 
-                            Log.d("alldata", dataSnapshot.child("online").getValue().toString());
-                            requestList.add(friend);
-                            adapter.notifyDataSetChanged();
-                        }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
+                    }
                 }
             }
 
