@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,9 +34,9 @@ public class RequestsFragment extends Fragment {
     private DatabaseReference mrootRef;
     private String currentUser;
     private LinearLayoutManager linearLayoutManager;
-    private FirebaseAuth mAuth;
     private List<FriendRequestModelClass> requestList = new ArrayList<>();
     private FriendRequestAdapter adapter;
+
     public RequestsFragment() {
         // Required empty public constructor
     }
@@ -46,8 +47,26 @@ public class RequestsFragment extends Fragment {
         mrootRef = FirebaseDatabase.getInstance().getReference();
         mrootRef.keepSynced(true);
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        adapter = new FriendRequestAdapter(getContext(),requestList);
+        adapter = new FriendRequestAdapter(getContext(), requestList);
         fetch();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_request, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mRecyclerView = view.findViewById(R.id.request_recycler_view);
+        mRecyclerView.hasFixedSize();
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+
+        mRecyclerView.setAdapter(adapter);
     }
 
     private void fetch() {
@@ -58,14 +77,14 @@ public class RequestsFragment extends Fragment {
 
                     final String friendUserId = data.getKey();
 
-                    final String date = data.getValue().toString();
+
+                    long timestamp = Long.parseLong(data.child("timestamp").getValue().toString());
+                    final String date = DateUtils.formatDateTime(getContext(), timestamp, DateUtils.FORMAT_SHOW_DATE);
 
 
                     mrootRef.child("users").child(friendUserId).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            Log.d("alldata", dataSnapshot.getValue().toString());
 
                             FriendRequestModelClass friend = new FriendRequestModelClass(
                                     dataSnapshot.child("name").getValue().toString(),
@@ -73,9 +92,7 @@ public class RequestsFragment extends Fragment {
                                     date,
                                     dataSnapshot.child("thumb_image").getValue().toString(),
                                     friendUserId,
-                                    dataSnapshot.child("online").getValue().toString()
-
-                            );
+                                    currentUser);
 
                             Log.d("alldata", dataSnapshot.child("online").getValue().toString());
                             requestList.add(friend);
@@ -94,25 +111,5 @@ public class RequestsFragment extends Fragment {
             }
         });
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_request, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mRecyclerView = view.findViewById(R.id.request_recycler_view);
-        mRecyclerView.hasFixedSize();
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        linearLayoutManager.setReverseLayout(true);
-        linearLayoutManager.setStackFromEnd(true);
-
-        mRecyclerView.setAdapter(adapter);
     }
 }

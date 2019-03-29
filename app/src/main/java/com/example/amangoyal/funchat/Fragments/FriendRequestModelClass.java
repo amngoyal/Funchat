@@ -6,23 +6,16 @@ class FriendRequestModelClass {
     private String uid;
     private String date;
     private String thumb_image;
-    private String onlineStatus;
+    private String currentUserUid;
 
 
-    public String getOnlineStatus() {
-        return onlineStatus;
-    }
 
-    public void setOnlineStatus(String onlineStatus) {
-        this.onlineStatus = onlineStatus;
-    }
-
-    public FriendRequestModelClass(String name, String image, String status, String thumb_image, String uid, String onlineStatus) {
+    public FriendRequestModelClass(String name, String image, String status, String thumb_image, String uid,String currentUserUid) {
         this.uid = uid;
         this.name = name;
         this.date = status;
         this.thumb_image = thumb_image;
-        this.onlineStatus = onlineStatus;
+        this.currentUserUid = currentUserUid;
     }
 
     public void setUid(String uid) {
@@ -76,4 +69,11 @@ class FriendRequestModelClass {
                 '}';
     }
 
+    public String getCurrentUserUid() {
+        return currentUserUid;
+    }
+
+    public void setCurrentUserUid(String currentUserUid) {
+        this.currentUserUid = currentUserUid;
+    }
 }
