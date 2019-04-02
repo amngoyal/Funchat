@@ -1,7 +1,9 @@
 package com.example.amangoyal.funchat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -35,7 +37,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, int i) {
+    public void onBindViewHolder(@NonNull MessageViewHolder messageViewHolder, final int i) {
 
         Messages message = messagesList.get(i);
 
@@ -53,6 +55,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
             messageViewHolder.messageLayout.setVisibility(View.INVISIBLE);
             Picasso.get().load(message.getMessage()).into(messageViewHolder.messageImageLayout);
         }
+
+
     }
 
 
@@ -66,10 +70,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         private TextView messageLayout,messageTimeLayout;
         private CircleImageView profile;
         public ImageView messageImageLayout;
+
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             messageLayout = itemView.findViewById(R.id.message_text_layout);
             profile = itemView.findViewById(R.id.message_profile_layout);
+
             messageImageLayout = itemView.findViewById(R.id.message_image_layout);
             messageTimeLayout = itemView.findViewById(R.id.message_time_layout);
 

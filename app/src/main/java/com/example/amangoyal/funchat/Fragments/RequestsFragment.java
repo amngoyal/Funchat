@@ -12,9 +12,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.amangoyal.funchat.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +38,7 @@ public class RequestsFragment extends Fragment {
     private LinearLayoutManager linearLayoutManager;
     private List<FriendRequestModelClass> requestList = new ArrayList<>();
     private FriendRequestAdapter adapter;
+    private TextView tEmptyList;
 
     public RequestsFragment() {
         // Required empty public constructor
@@ -65,12 +68,14 @@ public class RequestsFragment extends Fragment {
         mRecyclerView.hasFixedSize();
         linearLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
+        tEmptyList = view.findViewById(R.id.request_fragment_empty_list_text_layout);
 
         mRecyclerView.setAdapter(adapter);
+
     }
 
     private void fetch() {
-        mrootRef.child("friend_req").child(currentUser).addListenerForSingleValueEvent(new ValueEventListener() {
+        /*mrootRef.child("friend_req").child(currentUser).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (final DataSnapshot data : dataSnapshot.getChildren()) {
@@ -98,8 +103,8 @@ public class RequestsFragment extends Fragment {
                                 Log.d("alldata", dataSnapshot.child("online").getValue().toString());
                                 requestList.add(friend);
                                 adapter.notifyDataSetChanged();
-                            }
 
+                            }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -112,7 +117,67 @@ public class RequestsFragment extends Fragment {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
+        });*/
+
+        mrootRef.child("friend_req").child(currentUser).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                final String friendUserId = dataSnapshot.getKey();
+                if (dataSnapshot.child("request_type").getValue().toString().equals("received")) {
+
+                    long timestamp = Long.parseLong(dataSnapshot.child("timestamp").getValue().toString());
+                    final String date = DateUtils.formatDateTime(getContext(), timestamp, DateUtils.FORMAT_SHOW_DATE);
+
+
+                    mrootRef.child("users").child(friendUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
+                            FriendRequestModelClass friend = new FriendRequestModelClass(
+                                    dataSnapshot.child("name").getValue().toString(),
+                                    dataSnapshot.child("image").getValue().toString(),
+                                    date,
+                                    dataSnapshot.child("thumb_image").getValue().toString(),
+                                    friendUserId,
+                                    currentUser);
+
+                            Log.d("alldata", dataSnapshot.child("online").getValue().toString());
+                            requestList.add(friend);
+                            adapter.notifyDataSetChanged();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         });
 
     }
+
+
 }
+

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.amangoyal.funchat.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -62,7 +63,7 @@ public class FriendsFragment extends Fragment {
 
         mMainView = inflater.inflate(R.layout.fragment_friends, container, false);
 
-        Log.d(TAG,"On createview called ");
+        Log.d(TAG, "On createview called ");
         mFriendlist = mMainView.findViewById(R.id.friends_recycler_view);
 
         mFriendlist.setHasFixedSize(true);
@@ -75,46 +76,55 @@ public class FriendsFragment extends Fragment {
 
     public void fetch() {
 
-        mDatabaseReference.child(mCurrentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseReference.child(mCurrentUserId).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (final DataSnapshot data : dataSnapshot.getChildren()) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                    Log.d("aaaa", data.getKey());
-
-                    final String friendUserId = data.getKey();
-
-                    Log.d("bbbb", data.getValue().toString());
-
-                    final String date = data.getValue().toString();
+                //Log.d(TAG, "onChildAdded: " + dataSnapshot);
+                final String friendUserId = dataSnapshot.getKey();
+                final String date = dataSnapshot.getValue().toString();
 
 
-                    usersDatabaseRef.child(friendUserId).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                usersDatabaseRef.child(friendUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            Log.d("alldata", dataSnapshot.getValue().toString());
+                        Log.d("alldata", dataSnapshot.getValue().toString());
 
-                            FriendsModelClass friend = new FriendsModelClass(
-                                    dataSnapshot.child("name").getValue().toString(),
-                                    dataSnapshot.child("image").getValue().toString(),
-                                    date,
-                                    dataSnapshot.child("thumb_image").getValue().toString(),
-                                    friendUserId,
-                                    dataSnapshot.child("online").getValue().toString()
+                        FriendsModelClass friend = new FriendsModelClass(
+                                dataSnapshot.child("name").getValue().toString(),
+                                dataSnapshot.child("image").getValue().toString(),
+                                date,
+                                dataSnapshot.child("thumb_image").getValue().toString(),
+                                friendUserId,
+                                dataSnapshot.child("online").getValue().toString()
 
-                            );
+                        );
 
-                            Log.d("alldata", dataSnapshot.child("online").getValue().toString());
-                            arrayList.add(friend);
-                            friendListAdapter.notifyDataSetChanged();
-                        }
+                        Log.d("alldata", dataSnapshot.child("online").getValue().toString());
+                        arrayList.add(friend);
+                        friendListAdapter.notifyDataSetChanged();
+                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override

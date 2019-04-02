@@ -147,6 +147,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
             reject = itemView.findViewById(R.id.single_friend_request_reject_button);
             imageView = itemView.findViewById(R.id.single_user_image);
 
+
         }
 
 

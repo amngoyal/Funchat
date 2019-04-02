@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -53,6 +54,7 @@ public class ChatActivity extends AppCompatActivity {
     private DatabaseReference mRootRef;
     private String userName;
     private TextView nameView, lastSeenView;
+    private ConstraintLayout root;
     private CircleImageView circleImageView;
     private FirebaseAuth mAuth;
     private String mCurrentUser;
@@ -116,8 +118,17 @@ public class ChatActivity extends AppCompatActivity {
         nameView = findViewById(R.id.custom_bar_name);
         lastSeenView = findViewById(R.id.last_seen);
         circleImageView = findViewById(R.id.custom_action_image);
+        root = findViewById(R.id.custom_Action_bar);
 
         nameView.setText(userName);
+        root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),ProfileActivity.class);
+                intent.putExtra("user_id",mChatUser);
+                startActivity(intent);
+            }
+        });
 
         mRootRef.child("users").child(mChatUser).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -146,7 +157,7 @@ public class ChatActivity extends AppCompatActivity {
         });
 
 
-       /*---------------------------------------------------- Add chat node with useful data in chat node----------------------------------------*/
+        /*---------------------------------------------------- Add chat node with useful data in chat node----------------------------------------*/
         mRootRef.child("chat").child(mCurrentUser).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -157,10 +168,8 @@ public class ChatActivity extends AppCompatActivity {
                             Map chatAddMap = new HashMap();
                             chatAddMap.put("seen", "false");
                             chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
-                            chatAddMap.put("name", dataSnapshot.child("name").getValue());
-                            chatAddMap.put("thumb_image", dataSnapshot.child("thumb_image").getValue());
-                            chatAddMap.put("uid", dataSnapshot.getKey());
-                            chatAddMap.put("last_message","null");
+                            chatAddMap.put("last_message", "null");
+
 
                             Map chatUserMap = new HashMap();
                             chatUserMap.put("chat/" + mCurrentUser + "/" + mChatUser, chatAddMap);

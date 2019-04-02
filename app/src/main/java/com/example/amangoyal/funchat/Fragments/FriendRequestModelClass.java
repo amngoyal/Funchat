@@ -9,7 +9,6 @@ class FriendRequestModelClass {
     private String currentUserUid;
 
 
-
     public FriendRequestModelClass(String name, String image, String status, String thumb_image, String uid,String currentUserUid) {
         this.uid = uid;
         this.name = name;

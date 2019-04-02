@@ -130,11 +130,27 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-                Log.d(TAG, "onChildAdded: "+dataSnapshot);
-                ChatModelClass chatModelClass = dataSnapshot.getValue(ChatModelClass.class);
-                chatList.add(chatModelClass);
-               adapter.notifyDataSetChanged();
-                adapter.notifyItemChanged(1);
+                // Log.d(TAG, "onChildAdded: "+currentUser);
+                // Log.d(TAG, "onChildAdded: "+dataSnapshot);
+                final ChatModelClass chatModelClass = dataSnapshot.getValue(ChatModelClass.class);
+                chatModelClass.setUid(dataSnapshot.getKey());
+
+
+                mrootRef.child("users").child(dataSnapshot.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        chatModelClass.setThumb_image(dataSnapshot.child("thumb_image").getValue().toString());
+                        chatModelClass.setName(dataSnapshot.child("name").getValue().toString());
+                        chatList.add(chatModelClass);
+                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemChanged(1);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
 

@@ -13,12 +13,12 @@ public class ChatModelClass {
 
     }
 
-    public ChatModelClass(String seen, long timestamp, String name, String thumbImage, String uid, String lastMessage) {
+    public ChatModelClass(String seen, long timestamp, String lastMessage) {
         this.seen = seen;
         this.timestamp = timestamp;
-        this.name = name;
-        this.thumb_image = thumbImage;
-        this.uid = uid;
+      //  this.name = name;
+       // this.thumb_image = thumbImage;
+       // this.uid = uid;
         this.last_message = lastMessage;
 
     }
