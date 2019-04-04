@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mRootRef = FirebaseDatabase.getInstance().getReference();
-
         mToolbar = findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("FUN CHAT");
@@ -110,4 +109,6 @@ public class MainActivity extends AppCompatActivity {
             mRootRef.child("users").child(mUser.getUid()).child("online").setValue(ServerValue.TIMESTAMP);
         }
     }
+
+
 }

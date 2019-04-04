@@ -79,50 +79,6 @@ public class ChatsFragment extends Fragment {
 
     private void fetch() {
 
-        /*mrootRef.child("messages").child(currentUser).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChildren()) {
-
-                    //final Query messageQuery = mRootRef.child("messages").orderByKey().limitToLast(1);
-                    Log.d(TAG, "fetchCalled");
-
-                    mrootRef.child("chat").child(currentUser).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot d : dataSnapshot.getChildren()) {
-                                Log.d(TAG, "onDataChange: " + d);
-
-
-                                ChatModelClass chatModelClass = new ChatModelClass(
-                                        d.child("seen").getValue().toString(),
-                                        d.child("timestamp").getValue().toString(),
-                                        d.child("name").getValue().toString(),
-                                        d.child("thumb_image").getValue().toString(),
-                                        d.child("uid").getValue().toString()
-                                );
-                                chatList.add(chatModelClass);
-                                Log.d(TAG, "data added to list");
-                            }
-
-                            adapter.notifyDataSetChanged();
-                            Log.d(TAG, "list size: " + chatList.size());
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });*/
 
         Query chatQuery = mrootRef.child("chat").child(currentUser).orderByChild("timestamp").limitToLast(20);
 

@@ -96,7 +96,7 @@ public class ChatActivity extends AppCompatActivity {
         chatMessageListLayout.setHasFixedSize(true);
         chatMessageListLayout.setLayoutManager(mLinearLayoutManager);
 
-        mAdapter = new MessagesAdapter(getApplicationContext(), messagesList);
+        mAdapter = new MessagesAdapter(getApplicationContext(), messagesList,mCurrentUser);
         chatMessageListLayout.setAdapter(mAdapter);
         loadMessages();
 
@@ -309,6 +309,9 @@ public class ChatActivity extends AppCompatActivity {
                 mAdapter.notifyDataSetChanged();
                 chatMessageListLayout.scrollToPosition(messagesList.size() - 1);
                 swipeRefreshLayout.setRefreshing(false);
+
+
+
             }
 
             @Override
@@ -432,7 +435,13 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
             });
+
+
         }
+
+
     }
+
+
 }
 
