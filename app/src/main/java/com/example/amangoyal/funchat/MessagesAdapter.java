@@ -43,28 +43,17 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
     @NonNull
     @Override
-    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
-
-        Log.d(TAG, "onCreateViewHolder: " + messagesList.get(i).getFrom() + " ");
-
-        Messages tmessage = messagesList.get(i);
-
-        if (tmessage.getFrom().equals(currentUser)) {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_single_item_out_layout, viewGroup, false);
-            return new MessageViewHolder(view);
-        } else {
-            View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.message_single_item_in_layout, viewGroup, false);
-            return new MessageViewHolder(view);
-        }
-
+    public MessageViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int type) {
+        Log.d(TAG, "onCreateViewHolder: ");
+        return new MessageViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(type, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, final int i) {
 
         final Messages message = messagesList.get(i);
-        Log.d(TAG, "onBindViewHolder: ");
+
+        Log.d(TAG, "onBindViewHolder: " + i);
         String fromUser = message.getFrom();
         final String messageType = message.getType();
         final String time = DateUtils.formatDateTime(context, message.getTime(), DateUtils.FORMAT_SHOW_TIME);
@@ -84,7 +73,6 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
                     messageViewHolder.messageLayout.setText(message.getMessage());
                     messageViewHolder.messageImageLayout.setVisibility(View.INVISIBLE);
                     messageViewHolder.messageTimeLayout.setText(time);
-                 //   messageViewHolder.setMessageNameLayout(dataSnapshot.child("name").getValue().toString());
                 } else {
                     messageViewHolder.messageLayout.setVisibility(View.INVISIBLE);
                     Picasso.get().load(message.getMessage()).into(messageViewHolder.messageImageLayout);
@@ -96,10 +84,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
 
             }
         });
-
-
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        Log.d(TAG, "getItemViewType: ");
+        return messagesList.get(position).getFrom().equals(currentUser) ? R.layout.message_single_item_out_layout : R.layout.message_single_item_in_layout;
+    }
 
     @Override
     public int getItemCount() {
@@ -113,15 +104,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.Messag
         private ImageView messageImageLayout;
 
 
-        TextView chatUserMessageLayout, chatUserTimeLayout;
-        ImageView chatUserImageMessageLayout;
-
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             messageLayout = itemView.findViewById(R.id.message_text_layout);
 
             profile = itemView.findViewById(R.id.message_profile_layout);
-           // messageNameLayout = itemView.findViewById(R.id.message_name_layout);
+            // messageNameLayout = itemView.findViewById(R.id.message_name_layout);
 
             messageImageLayout = itemView.findViewById(R.id.message_image_layout);
             messageTimeLayout = itemView.findViewById(R.id.message_time_layout);

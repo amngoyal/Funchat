@@ -297,6 +297,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
                 Messages messages = dataSnapshot.getValue(Messages.class);
+                Log.d(TAG, "onChildAdded: "+ messages.getFrom()+" "+messages.getMessage());
                 itemPos++;
                 String messageKey = dataSnapshot.getKey();
                 if (itemPos == 1) {
